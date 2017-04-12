@@ -54,7 +54,7 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
 
         # we feed the stream to propka, and it reads it as if it were a file on
         # disk
-        mol = pk.single(pstream, None, writeout=False)
+        mol = pk.single(pstream, None)
         pstream.close(force=True)  # deallocate
 
         # parse propka data structures to get out what we actually want
