@@ -15,11 +15,15 @@ prediction of a single static conformation.
 * [PROPKA 3.1](https://github.com/jensengroup/propka-3.1) (used as a
   Python package)
 * [MDAnalysis](http://mdanalysis.org)
+* [MDSynthesis](http://mdsynthesis.readthedocs.io)
+* [pandas](http://pandas.pydata.org/)
 
 ## Documentation
 
 See the Jupyter notebook
-[docs/prokatraj-example.ipynb](./docs/prokatraj-example.ipynb) for this example.
+[docs/propkatraj-example.ipynb](./docs/propkatraj-example.ipynb) for
+how to use `propkatraj.get_propka` on an example trajectory and how to
+plot the data with [seaborn](https://seaborn.pydata.org/).
 
 ## Contact
 
