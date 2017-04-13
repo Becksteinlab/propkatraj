@@ -11,7 +11,8 @@ import pandas as pd
 import numpy as np
 
 import propka.run as pk
-import MDAnalysis.lib.util as util
+import MDAnalysis as mda
+
 
 def get_propka(sim, sel='protein', start=None, stop=None, step=1):
     """Get and store pKas for titrateable residues near the binding site.
@@ -47,13 +48,19 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
     # "filename" for our stream
     newname = sim["current.pdb"].abspath  # use same name so that propka overwrites
 
+    # progress logging output (because this is slow...)
+    pm = mda.lib.log.ProgressMeter(sim.universe.trajectory.n_frames,
+                                   format="{step:5d}/{numsteps} t={time:12.3f} ps  "
+                                   "[{percentage:5.1f}%]",
+                                   interval=1)
+
     times = []
     pkas = []
     for ts in sim.universe.trajectory[start:stop:step]:
-        print('\rTime (ps): {}'.format(ts.time), end="")
+        pm.echo(ts.frame, time=ts.time)
 
         # we create a named stream to write the atoms of interest into
-        pstream = util.NamedStream(cStringIO.StringIO(), newname)
+        pstream = mda.lib.util.NamedStream(cStringIO.StringIO(), newname)
         atomsel.write(pstream)
 
         pstream.reset()         # reset for reading
