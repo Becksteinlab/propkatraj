@@ -1,3 +1,9 @@
+# propkatrj --- https://github.com/Becksteinlab/propkatraj
+# Copyright (c) 2013-2017 David Dotson, Armin Zjajo, Oliver Beckstein
+# Released under the GNU General Public License v3+
+
+from __future__ import print_function
+
 from six import string_types
 import cStringIO
 
@@ -44,7 +50,7 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
     times = []
     pkas = []
     for ts in sim.universe.trajectory[start:stop:step]:
-        print '\rTime (ps): {}'.format(ts.time),
+        print('\rTime (ps): {}'.format(ts.time), end="")
 
         # we create a named stream to write the atoms of interest into
         pstream = util.NamedStream(cStringIO.StringIO(), newname)
