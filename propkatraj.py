@@ -29,7 +29,7 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
     -------
     sim : :class:`mdsynthesis.Sim`
         Sim that was operated on. Returned here for convenience; useful with `dask`.
-    
+
     """
 
     # need AtomGroup to write out for propka
@@ -44,8 +44,8 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
     times = []
     pkas = []
     for ts in sim.universe.trajectory[start:stop:step]:
-        print '\rTime (ps): {}'.format(ts.time), 
-        
+        print '\rTime (ps): {}'.format(ts.time),
+
         # we create a named stream to write the atoms of interest into
         pstream = util.NamedStream(cStringIO.StringIO(), newname)
         atomsel.write(pstream)
@@ -54,7 +54,7 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
 
         # we feed the stream to propka, and it reads it as if it were a file on
         # disk
-        mol = pk.single(pstream, None)
+        mol = pk.single(pstream, optargs=['--quiet'])
         pstream.close(force=True)  # deallocate
 
         # parse propka data structures to get out what we actually want
@@ -67,7 +67,7 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
 
         # record time
         times.append(ts.time)
-        
+
     # a `pandas.DataFrame` is a good data structure for this data
     df = pd.DataFrame(pkas, index=pd.Float64Index(times, name='time (ps)'),
                       columns=[g.atom.resNumb for g in groups])
