@@ -25,7 +25,7 @@ The `propkatra.get_propka()` function contains all functionality.
 
     from propkatraj import get_propka
 
-It takes a MDAnalysis.Universe instance as argument and runs PROPKA on each
+It takes a `MDAnalysis.Universe` instance as argument and runs PROPKA on each
 frame of the trajectory.
 
 
