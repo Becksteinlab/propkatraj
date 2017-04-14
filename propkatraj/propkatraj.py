@@ -35,8 +35,10 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None):
 
     Results
     -------
-    sim : :class:`mdsynthesis.Sim`
-        Sim that was operated on. Returned here for convenience; useful with `dask`.
+    pkas : :class:`pandas.DataFrame`
+        DataFrame giving estimated pKa value for each residue for each
+        trajectory frame. Residue numbers are given as column labels, times as
+        row labels.
 
     """
 
