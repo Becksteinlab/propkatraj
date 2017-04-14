@@ -3,12 +3,10 @@
 ## Pre-requisites
 
 Install [MDAnalysis](http://mdanalysis.org),
-[MDSynthesis](http://mdsynthesis.readthedocs.io),
 [pandas](http://pandas.pydata.org/) and their dependencies:
 
     pip install pandas
     pip install mdanalysis mdanalysistests
-    pip install mdsynthesis
 
 [PROPKA 3.1](https://github.com/jensengroup/propka-3.1) does not have
 official releases at the moment but we can
@@ -23,10 +21,15 @@ supports all required features for propkatraj.
 
 ## `propkatraj`
 
-Copy `propkatraj.py` into your working directory or add the directory
-containing this file to your Python `sys.path`.
+Install from source with:
 
-The following should work:
+    git clone https://github.com/Becksteinlab/propkatraj.git
+    cd propkatraj
+    pip install .
+
+Use the `--user` flag to install among your local user packages.
+
+The following should then work:
 
     from propkatraj import get_propka
 
