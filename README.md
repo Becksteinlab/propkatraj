@@ -15,7 +15,6 @@ prediction of a single static conformation.
 * [PROPKA 3.1](https://github.com/jensengroup/propka-3.1) (used as a
   Python package)
 * [MDAnalysis](http://mdanalysis.org)
-* [MDSynthesis](http://mdsynthesis.readthedocs.io)
 * [pandas](http://pandas.pydata.org/)
 
 See [INSTALL.md](INSTALL.md) for how to install everything.
@@ -26,33 +25,34 @@ The `propkatra.get_propka()` function contains all functionality.
 
     from propkatraj import get_propka
 
-It takes a
-[mdsynthesis.Sim](http://mdsynthesis.readthedocs.io/en/master/api_sims.html#sim-api)
-instance as argument and runs PROPKA on each frame of the trajectory.
+It takes a MDAnalysis.Universe instance as argument and runs PROPKA on each
+frame of the trajectory.
 
-	get_propka(sim, sel='protein', start=None, stop=None, step=1)
-		Get and store pKas for titrateable residues near the binding site.
 
-		Parameters
-		----------
-		sim : :class:`mdsynthesis.Sim`
-			Sim to obtain pKas for.
-		sel : str, array_like
-			Selection string to use for selecting atoms to use from Sim's universe.
-			Can also be a numpy array or list of atom indices to use.
-		start : int
-			Frame of trajectory to start from. `None` means start from beginning.
-		stop : int
-			Frame of trajectory to end at. `None` means end at trajectory end.
-		step : int
-			Step by which to iterate through trajectory frames. propka is slow,
-			so set according to how finely you need resulting timeseries.
-
-		Results
-		-------
-		sim : :class:`mdsynthesis.Sim`
-			Sim that was operated on. Returned here for convenience; useful with `dask`.
-
+    def get_propka(universe, sel='protein', start=None, stop=None, step=None):
+        Get and store pKas for titrateable residues near the binding site.
+    
+        Parameters
+        ----------
+        universe : :class:`MDAnalysis.Universe`
+            Universe to obtain pKas for.
+        sel : str, array_like
+            Selection string to use for selecting atoms to use from given
+            ``universe``. Can also be a numpy array or list of atom indices to use.
+        start : int
+            Frame of trajectory to start from. `None` means start from beginning.
+        stop : int
+            Frame of trajectory to end at. `None` means end at trajectory end.
+        step : int
+            Step by which to iterate through trajectory frames. propka is slow,
+            so set according to how finely you need resulting timeseries.
+    
+        Results
+        -------
+        pkas : :class:`pandas.DataFrame`
+            DataFrame giving estimated pKa value for each residue for each
+            trajectory frame. Residue numbers are given as column labels, times as
+            row labels.
 
 
 ## Documentation
