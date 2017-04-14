@@ -5,6 +5,7 @@
 from __future__ import print_function
 
 from six import string_types
+import os
 import cStringIO
 
 import pandas as pd
@@ -14,16 +15,16 @@ import propka.run as pk
 import MDAnalysis as mda
 
 
-def get_propka(sim, sel='protein', start=None, stop=None, step=1):
+def get_propka(universe, sel='protein', start=None, stop=None, step=None):
     """Get and store pKas for titrateable residues near the binding site.
 
     Parameters
     ----------
-    sim : :class:`mdsynthesis.Sim`
-        Sim to obtain pKas for.
+    universe : :class:`MDAnalysis.Universe`
+        Universe to obtain pKas for.
     sel : str, array_like
-        Selection string to use for selecting atoms to use from Sim's universe.
-        Can also be a numpy array or list of atom indices to use.
+        Selection string to use for selecting atoms to use from given
+        ``universe``. Can also be a numpy array or list of atom indices to use.
     start : int
         Frame of trajectory to start from. `None` means start from beginning.
     stop : int
@@ -41,22 +42,23 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
 
     # need AtomGroup to write out for propka
     if isinstance(sel, string_types):
-        atomsel = sim.universe.select_atoms(sel)
+        atomsel = universe.select_atoms(sel)
     elif isinstance(sel, (list, np.array)):
-        atomsel = sim.universe.atoms[sel]
+        atomsel = universe.atoms[sel]
 
     # "filename" for our stream
-    newname = sim["current.pdb"].abspath  # use same name so that propka overwrites
+    # use same name so that propka overwrites
+    newname = os.path.join(os.path.dirname(universe.filename), 'current.pdb')
 
     # progress logging output (because this is slow...)
-    pm = mda.lib.log.ProgressMeter(sim.universe.trajectory.n_frames,
+    pm = mda.lib.log.ProgressMeter(universe.trajectory.n_frames,
                                    format="{step:5d}/{numsteps} t={time:12.3f} ps  "
                                    "[{percentage:5.1f}%]",
                                    interval=1)
 
     times = []
     pkas = []
-    for ts in sim.universe.trajectory[start:stop:step]:
+    for ts in universe.trajectory[start:stop:step]:
         pm.echo(ts.frame, time=ts.time)
 
         # we create a named stream to write the atoms of interest into
@@ -82,10 +84,7 @@ def get_propka(sim, sel='protein', start=None, stop=None, step=1):
         times.append(ts.time)
 
     # a `pandas.DataFrame` is a good data structure for this data
-    df = pd.DataFrame(pkas, index=pd.Float64Index(times, name='time (ps)'),
+    df = pd.DataFrame(pkas, index=pd.Float64Index(times, name='time'),
                       columns=[g.atom.resNumb for g in groups])
 
-    # save DataFrame in HDF5 using `datreant.data`
-    sim.data['propka/pka'] = df
-
-    return sim
+    return df
