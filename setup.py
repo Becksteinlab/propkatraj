@@ -10,7 +10,7 @@ For a basic installation just type the command::
 from setuptools import setup, find_packages
 
 setup(name='propkatraj',
-      version='0.1.0-dev',
+      version='0.1.0',
       description='obtain pKas for titreatable residues from a simulation trajectory',
       author='David Dotson',
       author_email='dotsdl@gmail.com',
