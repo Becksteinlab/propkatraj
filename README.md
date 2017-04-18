@@ -1,6 +1,6 @@
 # README: propkatraj
 
-`propkatraj.py` can be used computationally estimate pKa values for
+`propkatraj.py` can be used to computationally estimate pKa values for
 protein residues. We use an ensemble approach where many different
 conformations are sampled with equilibrium molecular dynamics
 simulations. We then apply the fast heuristic pKa predictor
@@ -54,6 +54,13 @@ frame of the trajectory.
             trajectory frame. Residue numbers are given as column labels, times as
             row labels.
 
+The function returns a
+[pandas.DataFrame](http://pandas.pydata.org/pandas-docs/stable/dsintro.html#dataframe)
+which contains the time as the first column and the residue numbers as
+subsequent columns. For each time step, the predicted pKa value for
+this residue is stored. Process the `DataFrame` to obtain statistics
+as shown in the [Documentation](#Documentation).
+
 
 ## Documentation
 
@@ -61,6 +68,24 @@ See the Jupyter notebook
 [docs/propkatraj-example.ipynb](./docs/propkatraj-example.ipynb) for
 how to use `propkatraj.get_propka` on an example trajectory and how to
 plot the data with [seaborn](https://seaborn.pydata.org/).
+
+## Citation
+
+If you use `propkatraj` in published work please cite Reference 1 for
+PROPKA 3.1 and Reference 2 for the ensemble method itself.
+
+1. C. R. Søndergaard, M. H. M. Olsson, M. Rostkowski, and
+   J. H. Jensen. Improved treatment of ligands and coupling effects in
+   empirical calculation and rationalization of pKa values. *J
+   Chemical Theory and Computation*, 7(7):2284–2295, 2011. doi:
+   [10.1021/ct200133y](https://doi.org/10.1021/ct200133y).
+   
+2. C. Lee, S. Yashiro, D. L. Dotson, P. Uzdavinys, S. Iwata,
+   M. S. P. Sansom, C. von Ballmoos, O. Beckstein, D. Drew, and
+   A. D. Cameron. Crystal structure of the sodium-proton antiporter
+   NhaA dimer and new mechanistic insights. *J Gen Physiol*,
+   144(6):529–544, 2014. doi:
+   [10.1085/jgp.201411219](https://doi.org/10.1085/jgp.201411219).
 
 ## Contact
 
