@@ -27,11 +27,11 @@ Install from source with:
     cd propkatraj
     pip install .
 
-Use the `--user` flag to install among your local user packages.
+Use the `--user` flag for `pip` to install among your local user packages.
 
-The following should then work:
+The following should then work (inside the `python` interpreter or in a Python script):
 
     from propkatraj import get_propka
 
-The `propkatra.get_propka()` function contains all functionality. 
+The `propkatraj.get_propka()` function contains all functionality. 
 
