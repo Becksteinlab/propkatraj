@@ -21,7 +21,7 @@ See [INSTALL.md](INSTALL.md) for how to install everything.
 
 ## Usage
 
-The `propkatra.get_propka()` function contains all functionality. 
+The `propkatraj.get_propka()` function contains all functionality. 
 
     from propkatraj import get_propka
 
