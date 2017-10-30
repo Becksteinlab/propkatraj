@@ -15,7 +15,8 @@ import propka.run as pk
 import MDAnalysis as mda
 
 
-def get_propka(universe, sel='protein', start=None, stop=None, step=None):
+def get_propka(universe, sel='protein', start=None, stop=None, step=None,
+               skip_failure=False):
     """Get and store pKas for titrateable residues near the binding site.
 
     Parameters
@@ -32,6 +33,9 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None):
     step : int
         Step by which to iterate through trajectory frames. propka is slow,
         so set according to how finely you need resulting timeseries.
+    skip_failure : bool
+        If set to ``True``, skip frames where PROPKA fails. If ``False``
+        raise an exception. The default is ``False``.
 
     Results
     -------
