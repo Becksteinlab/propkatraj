@@ -15,8 +15,7 @@ import propka.run as pk
 import MDAnalysis as mda
 
 
-def get_propka(universe, sel='protein', start=None, stop=None, step=None,
-               skip_failure=False):
+def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_failure=False):
     """Get and store pKas for titrateable residues near the binding site.
 
     Parameters
@@ -75,8 +74,17 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None,
 
         # we feed the stream to propka, and it reads it as if it were a file on
         # disk
-        mol = pk.single(pstream, optargs=['--quiet'])
-        pstream.close(force=True)  # deallocate
+        try:
+               mol = pk.single(pstream, optargs=['--quiet'])
+        except IndexError as err:
+               if not skip_failure:
+                   raise
+               else:
+                   print(' ')
+                   print("failing frame:", ts.frame)
+                   continue
+        finally:
+               pstream.close(force=True)  # deallocate
 
         # parse propka data structures to get out what we actually want
         confname = mol.conformation_names[0]
