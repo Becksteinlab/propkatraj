@@ -3,6 +3,7 @@
 # Released under the GNU General Public License v3+
 
 from __future__ import print_function
+from fractions import Fraction
 
 from six import string_types
 import os
@@ -63,6 +64,8 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
 
     times = []
     pkas = []
+    failed_frames = 0
+    failed_frames_log = []
     for ts in universe.trajectory[start:stop:step]:
         pm.echo(ts.frame, time=ts.time)
 
@@ -82,6 +85,8 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
                else:
                    print(' ')
                    print("failing frame:", ts.frame)
+                   failed_frames = failed_frames + 1
+                   failed_frames_log.append(ts.frame)
                    continue
         finally:
                pstream.close(force=True)  # deallocate
@@ -98,6 +103,10 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
         times.append(ts.time)
 
     # a `pandas.DataFrame` is a good data structure for this data
+    print('  ')
+    print('failed frames =', failed_frames)
+    print('percent failure =',round(float(Fraction(failed_frames, len(universe.trajectory))),3),'%')
+    print(failed_frames_log)
     df = pd.DataFrame(pkas, index=pd.Float64Index(times, name='time'),
                       columns=[g.atom.resNumb for g in groups])
 
