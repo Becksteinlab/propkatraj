@@ -1,5 +1,5 @@
 # propkatrj --- https://github.com/Becksteinlab/propkatraj
-# Copyright (c) 2013-2017 David Dotson, Armin Zjajo, Oliver Beckstein
+# Copyright (c) 2013-2017 David Dotson, Ricky Sexton, Armin Zjajo, Oliver Beckstein
 # Released under the GNU General Public License v3+
 
 from __future__ import print_function
@@ -14,8 +14,9 @@ import numpy as np
 import propka.run as pk
 import MDAnalysis as mda
 
+import logging
 
-def get_propka(universe, sel='protein', start=None, stop=None, step=None):
+def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_failure=False):
     """Get and store pKas for titrateable residues near the binding site.
 
     Parameters
@@ -32,6 +33,10 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None):
     step : int
         Step by which to iterate through trajectory frames. propka is slow,
         so set according to how finely you need resulting timeseries.
+    skip_failure : bool
+        If set to ``True``, skip frames where PROPKA fails. If ``False``
+        raise an exception. The default is ``False``.
+        Log file (at level warning) contains information on failed frames.
 
     Results
     -------
@@ -41,7 +46,7 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None):
         row labels.
 
     """
-
+   
     # need AtomGroup to write out for propka
     if isinstance(sel, string_types):
         atomsel = universe.select_atoms(sel)
@@ -60,6 +65,8 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None):
 
     times = []
     pkas = []
+    failed_frames = 0
+    failed_frames_log = []
     for ts in universe.trajectory[start:stop:step]:
         pm.echo(ts.frame, time=ts.time)
 
@@ -71,8 +78,20 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None):
 
         # we feed the stream to propka, and it reads it as if it were a file on
         # disk
-        mol = pk.single(pstream, optargs=['--quiet'])
-        pstream.close(force=True)  # deallocate
+        try:
+               mol = pk.single(pstream, optargs=['--quiet'])
+        except IndexError as err:
+               if not skip_failure:
+                   raise
+               else:
+                   err_msg = "{0} (failure {2}): failing frame {1}".format(
+                         universe.trajectory.filename, ts.frame, failed_frames)
+                   failed_frames += 1
+                   failed_frames_log.append(ts.frame)
+                   logging.warning(err_msg)
+                   continue
+        finally:
+               pstream.close(force=True)  # deallocate
 
         # parse propka data structures to get out what we actually want
         confname = mol.conformation_names[0]
@@ -85,6 +104,11 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None):
         # record time
         times.append(ts.time)
 
+    if failed_frames_log:
+       logging.warning('number of failed frames = {0}'.format(failed_frames))
+       logging.warning('percent failure = {0:.3f}%'.format(float(failed_frames)/len(universe.trajectory)*100))
+       logging.warning('failed frames: %r', failed_frames_log)
+   
     # a `pandas.DataFrame` is a good data structure for this data
     df = pd.DataFrame(pkas, index=pd.Float64Index(times, name='time'),
                       columns=[g.atom.resNumb for g in groups])
