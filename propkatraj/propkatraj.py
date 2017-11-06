@@ -15,6 +15,8 @@ import numpy as np
 import propka.run as pk
 import MDAnalysis as mda
 
+import logging
+import traceback
 
 def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_failure=False):
     """Get and store pKas for titrateable residues near the binding site.
@@ -45,7 +47,7 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
         row labels.
 
     """
-
+   
     # need AtomGroup to write out for propka
     if isinstance(sel, string_types):
         atomsel = universe.select_atoms(sel)
@@ -83,10 +85,11 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
                if not skip_failure:
                    raise
                else:
-                   print(' ')
-                   print("failing frame:", ts.frame)
-                   failed_frames = failed_frames + 1
+                   err_msg = "{0} (failure {2}): failing frame {1}".format(
+                         universe.trajectory.filename, ts.frame, failed_frames)
+                   failed_frames += 1
                    failed_frames_log.append(ts.frame)
+                   logging.warning(err_msg)
                    continue
         finally:
                pstream.close(force=True)  # deallocate
@@ -102,11 +105,12 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
         # record time
         times.append(ts.time)
 
+    if failed_frames_log:
+       logging.warning('number of failed frames = {0}'.format(failed_frames))
+       logging.warning('percent failure = {0:.3f}%'.format(float(failed_frames)/len(universe.trajectory)*100))
+       logging.warning('failed frames: %r', failed_frames_log)
+   
     # a `pandas.DataFrame` is a good data structure for this data
-    print('  ')
-    print('failed frames =', failed_frames)
-    print('percent failure =',round(float(Fraction(failed_frames, len(universe.trajectory))),3),'%')
-    print(failed_frames_log)
     df = pd.DataFrame(pkas, index=pd.Float64Index(times, name='time'),
                       columns=[g.atom.resNumb for g in groups])
 
