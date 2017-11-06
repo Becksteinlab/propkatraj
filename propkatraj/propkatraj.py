@@ -1,9 +1,8 @@
 # propkatrj --- https://github.com/Becksteinlab/propkatraj
-# Copyright (c) 2013-2017 David Dotson, Armin Zjajo, Oliver Beckstein
+# Copyright (c) 2013-2017 David Dotson, Ricky Sexton, Armin Zjajo, Oliver Beckstein
 # Released under the GNU General Public License v3+
 
 from __future__ import print_function
-from fractions import Fraction
 
 from six import string_types
 import os
@@ -16,7 +15,6 @@ import propka.run as pk
 import MDAnalysis as mda
 
 import logging
-import traceback
 
 def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_failure=False):
     """Get and store pKas for titrateable residues near the binding site.
@@ -38,6 +36,7 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
     skip_failure : bool
         If set to ``True``, skip frames where PROPKA fails. If ``False``
         raise an exception. The default is ``False``.
+        Log file (at level warning) contains information on failed frames.
 
     Results
     -------
