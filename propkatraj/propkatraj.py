@@ -80,8 +80,10 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
         # disk
         try:
                mol = pk.single(pstream, optargs=['--quiet'])
-        except IndexError as err:
-               if not skip_failure:
+        except (IndexError, AttributeError) as err:
+                     #https://github.com/Becksteinlab/propkatraj/issues/13
+                     #https://github.com/Becksteinlab/propkatraj/issues/10
+               if not skip_failure:          
                    raise
                else:
                    err_msg = "{0} (failure {2}): failing frame {1}".format(
