@@ -6,7 +6,7 @@ from __future__ import print_function
 
 from six import string_types
 import os
-import cStringIO
+from six import StringIO
 
 import pandas as pd
 import numpy as np
@@ -71,7 +71,7 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
         pm.echo(ts.frame, time=ts.time)
 
         # we create a named stream to write the atoms of interest into
-        pstream = mda.lib.util.NamedStream(cStringIO.StringIO(), newname)
+        pstream = mda.lib.util.NamedStream(StringIO(), newname)
         atomsel.write(pstream)
 
         pstream.reset()         # reset for reading
