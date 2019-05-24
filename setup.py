@@ -10,11 +10,11 @@ For a basic installation just type the command::
 from setuptools import setup, find_packages
 
 setup(name='propkatraj',
-      version='1.0.1',
+      version='1.0.2',
       description='obtain pKas for titreatable residues from a simulation trajectory',
       author='David Dotson',
       author_email='dotsdl@gmail.com',
-      classifiers=['Development Status :: 5 - Production/Stable',
+      classifiers=['Development Status :: 6 - Mature',
                    'Environment :: Console',
                    'Intended Audience :: Science/Research',
                    'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
