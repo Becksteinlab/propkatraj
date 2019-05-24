@@ -2,24 +2,29 @@
 
 ## Pre-requisites
 
-Install [MDAnalysis](http://mdanalysis.org),
-[pandas](http://pandas.pydata.org/) and their dependencies:
+Install [MDAnalysis](https://mdanalysis.org),
+[pandas](http://pandas.pydata.org/) and their dependencies, using
+your preferred method such as using `conda`
+
+    conda install mdanalysis mdanalysistests pandas
+	
+or 	`pip`:
 
     pip install pandas
     pip install mdanalysis mdanalysistests
 
-[PROPKA 3.1](https://github.com/jensengroup/propka-3.1) does not have
-official releases at the moment but we can
-[pip-install](https://pip.pypa.io/en/stable/reference/pip_install/#vcs-support)
-the source directly from GitHub (you need to have
-[git](https://git-scm.com/) installed):
 
-    pip install git+https://github.com/jensengroup/propka-3.1.git@master#egg=propka-3.1
+## `pip` installation
 
-This *should* install the most recent version of PROPKA 3.1 that
-supports all required features for propkatraj.
+Install `propkatraj` from PyPi with
 
-## `propkatraj`
+    pip install propkatraj
+	
+which will install all additional dependencies such as [PROPKA
+3.1](https://github.com/jensengroup/propka-3.1).
+
+
+## Source installation
 
 Install from source with:
 
@@ -29,9 +34,14 @@ Install from source with:
 
 Use the `--user` flag for `pip` to install among your local user packages.
 
+# Testing
+
 The following should then work (inside the `python` interpreter or in a Python script):
 
     from propkatraj import get_propka
 
 The `propkatraj.get_propka()` function contains all functionality. 
 
+Open the Jupyter notebook in
+[`docs/propkatraj-example.ipynb`](https://nbviewer.jupyter.org/github/Becksteinlab/propkatraj/blob/master/docs/propkatraj-example.ipynb)
+and run it.
