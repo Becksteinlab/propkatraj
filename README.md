@@ -1,4 +1,5 @@
 # README: propkatraj
+[![DOI](https://zenodo.org/badge/88095629.svg)](https://zenodo.org/badge/latestdoi/88095629)
 
 `propkatraj.py` can be used to computationally estimate pKa values for
 protein residues. We use an ensemble approach where many different
