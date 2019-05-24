@@ -1,0 +1,27 @@
+.. -*- coding: utf-8 -*-
+
+=======================
+ Authors of propkatraj
+=======================
+
+All contributing authors are listed in this file below. The repository history
+at https://github.com/Becksteinlab/propkatraj shows individual code contributions.
+
+An initial unpublished version by Oliver Beckstein was used for generating the data
+in Ref. 2 (see README.md). This code was cleaned up and made to work as its own
+library by David Dotson, with contributions from others, as listed below.
+
+
+Chronological list of authors
+-----------------------------
+
+2017
+  - David Dotson
+  - Oliver Beckstein
+  - Armin Zjajo
+
+2018
+  - Rick Sexton
+
+2019
+  - Shujie Fan
