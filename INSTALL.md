@@ -16,7 +16,8 @@ or 	`pip`:
 
 ## `pip` installation
 
-Install `propkatraj` from PyPi with
+Install `propkatraj` from [PyPi:
+propkatraj](https://pypi.org/project/propkatraj/) with
 
     pip install propkatraj
 	
