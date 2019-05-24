@@ -73,7 +73,8 @@ plot the data with [seaborn](https://seaborn.pydata.org/).
 ## Citation
 
 If you use `propkatraj` in published work please cite Reference 1 for
-PROPKA 3.1 and Reference 2 for the ensemble method itself.
+PROPKA 3.1 and Reference 2 for the ensemble method itself. Reference 3
+is for the software if you need a specific software citation.
 
 1. C. R. Søndergaard, M. H. M. Olsson, M. Rostkowski, and
    J. H. Jensen. Improved treatment of ligands and coupling effects in
@@ -87,6 +88,10 @@ PROPKA 3.1 and Reference 2 for the ensemble method itself.
    NhaA dimer and new mechanistic insights. *J Gen Physiol*,
    144(6):529–544, 2014. doi:
    [10.1085/jgp.201411219](https://doi.org/10.1085/jgp.201411219).
+
+3. Oliver Beckstein, David Dotson, Rick Sexton, Shujie Fan, and Armin Zijajo. 
+   (2019, May 24). Becksteinlab/propkatraj: 1.0.0 (Version release-1.0.0). 
+   Zenodo. http://doi.org/10.5281/zenodo.3228426
 
 ## Contact
 
