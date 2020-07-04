@@ -38,13 +38,20 @@ matrix:
 
 before_install:
   - uname -a
+  - sudo apt-get update
+  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - mkdir $HOME/.conda
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - $HOME/miniconda/bin/conda init bash
+  - source ~/.bash_profile
+  - conda activate base
+  - conda update --yes conda
+  - uname -a
 
 
 install:
-    # Create test environment for package (using astropy's ci-helper)
-    # See https://github.com/MDAnalysis/mdanalysis/issues/2818
-  - git clone git://github.com/astropy/ci-helpers.git
-  - source ci-helpers/travis/setup_conda.sh
+  - conda env create python=$PYTHON_VERSION -f environment.yml --quiet
+  - source activate propkatraj
   - python -V
     # Build and install package
   - pip install -e .
