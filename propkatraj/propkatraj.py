@@ -6,6 +6,7 @@ from __future__ import print_function
 
 from six import string_types
 import os
+import tempfile
 from six import StringIO, raise_from
 
 import pandas as pd
@@ -54,8 +55,10 @@ class PropkaTraj(AnalysisBase):
         else:
             self.ag = universe.atoms
 
+        # probably needs to be a temporary directory instead
         self.tmpfile = os.path.join(os.path.dirname(self.ag.universe.filename),
                                     'current.pdb')
+        self.skip_failure = skip_failure
         super(PropkaTraj, self).__init__(self.ag.universe.trajectory, **kwargs)
 
     def _prepare(self):
@@ -63,6 +66,7 @@ class PropkaTraj(AnalysisBase):
         self._pkas = []
         self.num_failed_frames = 0
         self.failed_frames_log = []
+        self.failed_times = []
         self._columns = None
 
     def _single_frame(self):
@@ -74,30 +78,38 @@ class PropkaTraj(AnalysisBase):
         try:
             mol = pk.single(pstream, optargs=['--quiet'])
         except (IndexError, AttributeError) as err:
-            errmsg = "failure on frame: {0}".fromat(self._ts.frame)
-            if not skip_failure:
+            errmsg = "failure on frame: {0}".format(self._ts.frame)
+            if not self.skip_failure:
                 raise_from(RuntimeError(errmsg), None)
             else:
                 warnings.warn(errmsg)
                 self.num_failed_frames += 1
                 self.failed_frames_log.append(self._ts.frame)
+                self.failed_times.append(self._ts.time)
+        else:
+            confname = mol.conformation_names[0]
+            conformation = mol.conformations[confname]
+            groups = conformation.get_titratable_groups()
+
+            # extract pka estimates from each residue
+            self._pkas.append([g.pka_value for g in groups])
+            if self._columns is None:
+                self._columns=[g.atom.resNumb for g in groups]
         finally:
             # deallocate stream
             pstream.close(force=True)
 
-        confname = mol.conformation_names[0]
-        conformation = mol.conformations[confname]
-        groups = conformation.get_titratable_groups()
-
-        # extract pka estimates from each residue
-        self._pkas.append([g.pka_value for g in groups])
-        if self._columns is None:
-            self._columns=[g.atom.resNumb for g in groups]
-
     def _conclude(self):
+        # to allow for popping times later, convert self.times to list
+        times = self.times.tolist()
+
         # Ouput failed frames
         if self.num_failed_frames > 0:
             perc_failure = (self.num_failed_frames / self.n_frames) * 100
+            # if frames have failed we need to ammend times accordingly
+            for i in self.failed_times:
+                times.remove(i)
+
             wmsg = ("number of failed frames = {0}\n"
                     "percentage failure = {1}\n"
                     "failed frames: {2}".format(self.num_failed_frames,
@@ -105,7 +117,7 @@ class PropkaTraj(AnalysisBase):
                                                 self.failed_frames_log))
             warnings.warn(wmsg)
 
-        self.pkas = pd.DataFrame(self._pkas, index=pd.Float64Index(self.times,
+        self.pkas = pd.DataFrame(self._pkas, index=pd.Float64Index(times,
                                  name='time'), columns=self._columns)
 
 
