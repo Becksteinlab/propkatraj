@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 
 # Make sure we have the right python version (2.7+)
-if sys.version[:2] < (2, 7):
+if sys.version_info[:2] < (2, 7):
     print('propkatraj requires python 2.7 or above')
     sys.exit(-1)
 
@@ -45,5 +45,5 @@ setup(name='propkatraj',
       license='GPLv3',
       long_description=open('README.md').read(),
       long_description_content_type='text/markdown; variant=GFM',
-      install_requires=['six', 'numpy', 'pandas', 'MDAnalysis<=2.0', 'propka==3.1']
+      install_requires=['six', 'numpy', 'pandas', 'MDAnalysis<2.0.0', 'propka==3.1']
       )

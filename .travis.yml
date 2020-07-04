@@ -1,0 +1,64 @@
+language: python
+group: travist_latest
+
+env:
+  global:
+    - CYTHON_TRACE_NOGIL=1
+      # numpy is in MDA, pin MD to < 2.0 as we are still supporting 2.7
+    - CONDA_DEPENDENCIES="MDAnalysis<2.0.0 MDAnalysisTests<2.0.0 six pytest pytest-cov codecov"
+    - CONDA_CHANNELS='conda-forge'
+    - CONDA_CHANNEL_PRIORITY=True
+    - PIP_DEPENDENCIES="propka==3.1"
+
+
+matrix:
+  include:
+    # only test latest python for OSX
+    - os: osx
+      language: generic
+      env: PYTHON_VERSION=3.8
+
+    # Test for full range
+    - os: linux
+      dist: bionic
+      language: generic
+      env: PYTHON_VERSION=2.7
+    - os: linux
+      dist: bionic
+      language: generic
+      env: PYTHON_VERSION=3.6
+    - os: linux
+      dist: bionic
+      language: generic
+      env: PYTHON_VERSION=3.6
+    - os: linux
+      dist: bionic
+      language: generic
+      env: PYTHON_VERSION=3.7
+    - os: linux
+      dist: bionic
+      language: generic
+      env: PYTHON_VERSION=3.8
+
+
+before_install:
+  - uname -a
+
+
+install:
+    # Create test environment for package (using astropy's ci-helper)
+  - git clone git://github.com/astropy/ci-helpers.git
+  - source ci-helpers/travis/setup_conda.sh
+  - python -V
+    # Build and install package
+  - pip install -e .
+
+
+script:
+  - pytest -v --disable-pytest-warnings --cov=propkatraj propkatraj/tests/
+
+notifications:
+    email: false
+
+after_success:
+  - codecov
