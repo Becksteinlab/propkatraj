@@ -66,7 +66,8 @@ def test_single_frame_regression_analysisbase(tmpdir, u, selection):
     """Single frame PropkaTraj regression test"""
     with tmpdir.as_cwd():
         if selection == 'ag':
-            pkatraj = propkatraj.PropkaTraj(u.select_atoms('protein'))
+            pkatraj = propkatraj.PropkaTraj(u.select_atoms('protein'),
+                                            sel=None)
         elif selection == 'array':
             selection = u.select_atoms('protein').ix
             pkatraj = propkatraj.PropkaTraj(u, sel=selection)
