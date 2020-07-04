@@ -6,15 +6,108 @@ from __future__ import print_function
 
 from six import string_types
 import os
-from six import StringIO
+from six import StringIO, raise_from
 
 import pandas as pd
 import numpy as np
 
 import propka.run as pk
 import MDAnalysis as mda
+from MDAnalysis.analysis.base import AnalysisBase
 
+import warnings
 import logging
+
+
+class PropkaTraj(AnalysisBase):
+    """Add some docstring here"""
+    def __init__(self, universe, sel='protein', start=None, stop=None,
+                 skip_failure=False, **kwargs):
+        """Init routine for the PropkaTraj class
+
+        TODO: improve this
+
+        Parameters
+        ----------
+        universe : :class:`MDAnalysis.Universe` or
+                   :class:`MDAnalysis.AtomGroup`
+            MDAnalysis Universe or AtomGroup to obtain pKas for.
+        sel: str, array_like
+            Selection string to use for selecting atoms to use from given
+            ``universe``. Can also be a numpy array or list of atom indices.
+            [`protein`]
+        skip_failure : bool
+            If set to ``True``, skip frames where PROPKA fails. If ``False``
+            raise an exception. [`False`]
+
+        Results
+        -------
+        pkas : :class:`pandas.DataFrame`
+            DataFrame giving estimated pKa value for each residue for each
+            trajectory frame. Residue numbers are given as column labels,
+            times as row labels.
+        """
+        if isinstance(sel, string_types):
+            self.ag = universe.select_atoms(sel)
+        elif isinstance(sel, (list, np.ndarray)):
+            self.ag = universe.atoms[sel]
+        else:
+            self.ag = universe.atoms
+
+        self.tmpfile = os.path.join(os.path.dirname(self.ag.universe.filename),
+                                    'current.pdb')
+        super(PropkaTraj, self).__init__(self.ag.universe.trajectory, **kwargs)
+
+    def _prepare(self):
+        """Creates necessary containers to store pka values"""
+        self._pkas = []
+        self.num_failed_frames = 0
+        self.failed_frames_log = []
+        self._columns = None
+
+    def _single_frame(self):
+        pstream = mda.lib.util.NamedStream(StringIO(), self.tmpfile)
+        self.ag.write(pstream)
+        # reset stream for reading
+        pstream.reset()
+
+        try:
+            mol = pk.single(pstream, optargs=['--quiet'])
+        except (IndexError, AttributeError) as err:
+            errmsg = "failure on frame: {0}".fromat(self._ts.frame)
+            if not skip_failure:
+                raise_from(RuntimeError(errmsg), None)
+            else:
+                warnings.warn(errmsg)
+                self.num_failed_frames += 1
+                self.failed_frames_log.append(self._ts.frame)
+        finally:
+            # deallocate stream
+            pstream.close(force=True)
+
+        confname = mol.conformation_names[0]
+        conformation = mol.conformations[confname]
+        groups = conformation.get_titratable_groups()
+
+        # extract pka estimates from each residue
+        self._pkas.append([g.pka_value for g in groups])
+        if self._columns is None:
+            self._columns=[g.atom.resNumb for g in groups]
+
+    def _conclude(self):
+        # Ouput failed frames
+        if self.num_failed_frames > 0:
+            perc_failure = (self.num_failed_frames / self.n_frames) * 100
+            wmsg = ("number of failed frames = {0}\n"
+                    "percentage failure = {1}\n"
+                    "failed frames: {2}".format(self.num_failed_frames,
+                                                perc_failure,
+                                                self.failed_frames_log))
+            warnings.warn(wmsg)
+
+        self.pkas = pd.DataFrame(self._pkas, index=pd.Float64Index(self.times,
+                                 name='time'), columns=self._columns)
+
 
 def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_failure=False):
     """Get and store pKas for titrateable residues near the binding site.
@@ -50,7 +143,7 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
     # need AtomGroup to write out for propka
     if isinstance(sel, string_types):
         atomsel = universe.select_atoms(sel)
-    elif isinstance(sel, (list, np.array)):
+    elif isinstance(sel, (list, np.ndarray)):
         atomsel = universe.atoms[sel]
 
     # "filename" for our stream
