@@ -50,7 +50,7 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_f
     # need AtomGroup to write out for propka
     if isinstance(sel, string_types):
         atomsel = universe.select_atoms(sel)
-    elif isinstance(sel, (list, np.array)):
+    elif isinstance(sel, (list, np.ndarray)):
         atomsel = universe.atoms[sel]
 
     # "filename" for our stream

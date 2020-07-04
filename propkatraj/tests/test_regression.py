@@ -32,12 +32,16 @@ def pka_from_file(filename):
     return resnums, pkas
 
 
-def test_single_frame_regression(tmpdir, u):
+@pytest.mark.parametrize('selection', ['protein', 'array'])
+def test_single_frame_regression(tmpdir, u, selection):
     """Single frame propkatraj call compared against same frame written by
     MDA
     """
     with tmpdir.as_cwd():
-        pkas = propkatraj.get_propka(u, start=0, stop=1)
+        if selection == 'array':
+            selection = u.select_atoms('protein').ix
+
+        pkas = propkatraj.get_propka(u, sel=selection, stop=1)
 
         # load reference data
         ref_resnums, ref_pkas = pka_from_file(PSF_FRAME_ZERO_PKA)
