@@ -47,6 +47,7 @@ before_install:
 
 install:
     # Create test environment for package (using astropy's ci-helper)
+    # See https://github.com/MDAnalysis/mdanalysis/issues/2818
   - git clone git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
   - python -V
