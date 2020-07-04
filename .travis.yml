@@ -33,7 +33,13 @@ matrix:
 
 before_install:
   - uname -a
-  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  # get the right anaconda version
+  - |
+     if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
+       wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
+     else
+       wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+     fi
   - mkdir $HOME/.conda
   - bash miniconda.sh -b -p $HOME/miniconda
   - $HOME/miniconda/bin/conda init bash
