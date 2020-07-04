@@ -4,11 +4,6 @@ group: travist_latest
 env:
   global:
     - CYTHON_TRACE_NOGIL=1
-      # numpy is in MDA, pin MD to < 2.0 as we are still supporting 2.7
-    - CONDA_DEPENDENCIES="MDAnalysis<2.0.0 MDAnalysisTests<2.0.0 six pytest pytest-cov codecov"
-    - CONDA_CHANNELS='conda-forge'
-    - CONDA_CHANNEL_PRIORITY=True
-    - PIP_DEPENDENCIES="propka==3.1"
 
 
 matrix:
@@ -38,7 +33,6 @@ matrix:
 
 before_install:
   - uname -a
-  - sudo apt-get update
   - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - mkdir $HOME/.conda
   - bash miniconda.sh -b -p $HOME/miniconda
@@ -50,7 +44,7 @@ before_install:
 
 
 install:
-  - conda env create python=$PYTHON_VERSION -f environment.yml --quiet
+  - conda env create python=$PYTHON_VERSION -f devtools/environment.yml --quiet
   - source activate propkatraj
   - python -V
     # Build and install package

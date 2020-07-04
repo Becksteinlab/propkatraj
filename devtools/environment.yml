@@ -7,6 +7,9 @@ dependencies:
   - MDAnalysisTests<2.0.0
   - six
   - pandas
+  - pytest
+  - pytest-cov
+  - codecov
   - pip
   - pip:
     - propka==3.1
