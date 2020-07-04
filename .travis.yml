@@ -20,23 +20,18 @@ matrix:
 
     # Test for full range
     - os: linux
-      dist: bionic
       language: generic
       env: PYTHON_VERSION=2.7
     - os: linux
-      dist: bionic
       language: generic
       env: PYTHON_VERSION=3.6
     - os: linux
-      dist: bionic
       language: generic
       env: PYTHON_VERSION=3.6
     - os: linux
-      dist: bionic
       language: generic
       env: PYTHON_VERSION=3.7
     - os: linux
-      dist: bionic
       language: generic
       env: PYTHON_VERSION=3.8
 
