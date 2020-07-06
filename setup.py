@@ -7,7 +7,14 @@ For a basic installation just type the command::
 
 """
 
+import sys
 from setuptools import setup, find_packages
+
+
+# Make sure we have the right python version (2.7+)
+if sys.version_info[:2] < (2, 7):
+    print('propkatraj requires python 2.7 or above')
+    sys.exit(-1)
 
 setup(name='propkatraj',
       version='1.0.2',
@@ -27,6 +34,7 @@ setup(name='propkatraj',
                    'Programming Language :: Python :: 3.5',
                    'Programming Language :: Python :: 3.6',
                    'Programming Language :: Python :: 3.7',
+                   'Programming Language :: Python :: 3.8',
       ],
       project_urls={
           'Documentation': 'https://github.com/Becksteinlab/propkatraj/blob/master/README.md',
@@ -38,5 +46,5 @@ setup(name='propkatraj',
       license='GPLv3',
       long_description=open('README.md').read(),
       long_description_content_type='text/markdown; variant=GFM',
-      install_requires=['six', 'numpy', 'pandas', 'MDAnalysis', 'propka']
+      install_requires=['six', 'numpy', 'pandas', 'MDAnalysis<2.0.0', 'propka==3.1']
       )
