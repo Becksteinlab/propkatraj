@@ -6,7 +6,6 @@ from __future__ import print_function
 
 from six import string_types
 import os
-import tempfile
 from six import StringIO, raise_from
 
 import pandas as pd
@@ -15,54 +14,145 @@ import numpy as np
 import propka.run as pk
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
+from MDAnalysis.lib.util import deprecate
 
 import warnings
 import logging
 
 
 class PropkaTraj(AnalysisBase):
-    """Add some docstring here"""
-    def __init__(self, universe, sel='protein', start=None, stop=None,
-                 skip_failure=False, **kwargs):
-        """Init routine for the PropkaTraj class
+    """Per residue pKa analysis of a trajectory.
 
-        TODO: improve this
+    Runs :program:`propka` on the titrateable residues of the selected
+    AtomGroup on each frame in the trajectory.
 
-        Parameters
-        ----------
-        universe : :class:`MDAnalysis.Universe` or
-                   :class:`MDAnalysis.AtomGroup`
-            MDAnalysis Universe or AtomGroup to obtain pKas for.
-        sel: str, array_like
-            Selection string to use for selecting atoms to use from given
-            ``universe``. Can also be a numpy array or list of atom indices.
-            [`protein`]
-        skip_failure : bool
-            If set to ``True``, skip frames where PROPKA fails. If ``False``
-            raise an exception. [`False`]
+    Parameters
+    ----------
+    atomgroup : :class:`MDAnalysis.Universe` or :class:`MDAnalysis.AtomGroup`
+        Group of atoms containing the residues for pKa analysis. Please note
+        that :class:`MDAnalysis.UpdatingAtomGroup` are not supported and will
+        be automatically converted to :class:`MDAnalysis.AtomGroup`.
+    select : str
+        Selection string to use for selecting a subsection of atoms to use
+        from the input ``atomgroup``. [`protein`]
+    skip_failure : bool
+        If set to ``True``, skip frames where :program:`propka` fails. A list
+        of failed frames is made available in
+        :attr:`PropkaTraj.failed_frames_log`. If ``False`` raise a
+        RuntimeError exception on those frames. [`False`]
 
-        Results
-        -------
-        pkas : :class:`pandas.DataFrame`
-            DataFrame giving estimated pKa value for each residue for each
-            trajectory frame. Residue numbers are given as column labels,
-            times as row labels.
-        """
-        if isinstance(sel, string_types):
-            self.ag = universe.select_atoms(sel)
-        elif isinstance(sel, (list, np.ndarray)):
-            self.ag = universe.atoms[sel]
+
+    Returns
+    -------
+    pkas : :class:`pandas.DataFrame`
+        DataFrame giving the estimated pKa value for each titrateable residue
+        for each trajectory frame. Residue numbers are given as column labels,
+        times as row labels.
+
+
+    Notes
+    -----
+    Currently only the default behaviour supplemented with the `--quiet` flag
+    of :program:`propka` is used.
+
+
+    Examples
+    --------
+    A common use case is to calculate the pKa values of titrateable residues in
+    a protein across a trajectory.
+
+    To do this you first must
+
+    1. Ensure that any molecules that have been broken across periodic
+       bondaries have been made whole.
+    2. Only supply molecules that :program:`propka` will support.
+
+    To generate a timeseries of pKa predictions for a protein, first create
+    a :class:`PropkaTraj` object by supplying an MDAnalysis Universe or
+    AtomGroup::
+
+      import MDAnalysis as mda
+      # here we will use the MDAnalysis PSF and DCD example files
+      from MDAnalysisTests.datafiles import PSF, DCD
+      from propkatraj import PropkaTraj
+
+      u = mda.Universe(PSF, DCD)
+
+      pkatraj = PropkaTraj(u)
+
+    By default :class:`PropkaTraj` will select all protein residues (based on
+    standard protein residue naming) in the input ``atomgroup``, however this
+    can be changed by passing the ``select`` keyword. For example to limit the
+    input residues to residues numbered 1 through to 10::
+
+      pkatraj = PropkaTraj(u, select="resnum 1-10")
+
+    Alternatively, you can create an atomgroup beforehand and pass `None` to
+    ``select``::
+
+      ag = u.select_atoms('resnum 1-10")
+      pkatraj = PropkaTraj(ag, select=None)
+
+    Once the :class:`PropkaTraj` object has been created, we then use the
+    :meth:`run` to analyse the trajectory::
+
+      pkatraj.run()
+
+    In some cases, especially considering that calling propka can be time
+    consuming for large systems, you may not want to analyse every frame.
+    You can pass the ``start``, ``stop``, and ``step`` arguments to :meth:`run`
+    in order to alter the starting frame, final frame and frame sampling
+    frequency. Please note that frame numbers are zero formatted, and the
+    ``stop`` keyword is exclusive, as is the default in
+    :class:`MDAnalysis.AnalysisBase` objects. For example, in order to sample
+    every two frames from the first 10 frames::
+
+      pkatraj.run(start=0, stop=10, step=2)
+
+    You can also set the ``verbose`` keyword in order to have a nice progress
+    bar of the analysis progress::
+
+      pkatraj.run(verbose=True)
+
+    Once completed, the resulting timeseries of predicted pKas per residue is
+    made available as a :class:`pandas.DataFrame` under :attr`PropkaTraj`.pkas.
+    For example if one wanted to get a summary of the statistics of the
+    timeseries::
+
+      pkatraj.pkas.describe()
+
+    If one wanted to plot per residue boxplots of the timeseries data and save
+    it as a file `pKa-plot.png` (note: this requires the ``matplotlib`` and
+    ``seaborn`` packages which are not installed by default with
+    ``propkatraj``)::
+
+      import matplotlib.pyplot as plt
+      import seaborn as sns
+
+      fig = plt.figure(figsize=(28, 8))
+      ax = fig.add_subplot(1, 1, 1)
+      sns.boxplot(data=pkatraj.pkas, ax=ax)
+      ax.set_xlabel('residue number')
+      ax.set_ylabel(r'p$K_a$')
+      fig.savefig('pKa-plot.png')
+
+
+    .. versionadded:: 1.0.3
+    """
+    def __init__(self, atomgroup, select='protein', skip_failure=False,
+                 **kwargs):
+        if select is not None:
+            self.ag = atomgroup.select_atoms(select).atoms
         else:
-            self.ag = universe.atoms
+            self.ag = atomgroup.atoms
 
-        # probably needs to be a temporary directory instead
+        # TODO: probably needs to be a temporary directory instead
         self.tmpfile = os.path.join(os.path.dirname(self.ag.universe.filename),
                                     'current.pdb')
         self.skip_failure = skip_failure
         super(PropkaTraj, self).__init__(self.ag.universe.trajectory, **kwargs)
 
     def _prepare(self):
-        """Creates necessary containers to store pka values"""
         self._pkas = []
         self.num_failed_frames = 0
         self.failed_frames_log = []
@@ -76,11 +166,12 @@ class PropkaTraj(AnalysisBase):
         pstream.reset()
 
         try:
+            # TODO: it would be nice to allow for other options, maybe for 3.2?
             mol = pk.single(pstream, optargs=['--quiet'])
         except (IndexError, AttributeError) as err:
             errmsg = "failure on frame: {0}".format(self._ts.frame)
             if not self.skip_failure:
-                raise_from(RuntimeError(errmsg), None)
+                raise_from(RuntimeError(errmsg), err)
             else:
                 warnings.warn(errmsg)
                 self.num_failed_frames += 1
@@ -94,7 +185,7 @@ class PropkaTraj(AnalysisBase):
             # extract pka estimates from each residue
             self._pkas.append([g.pka_value for g in groups])
             if self._columns is None:
-                self._columns=[g.atom.resNumb for g in groups]
+                self._columns = [g.atom.resNumb for g in groups]
         finally:
             # deallocate stream
             pstream.close(force=True)
@@ -121,8 +212,10 @@ class PropkaTraj(AnalysisBase):
                                  name='time'), columns=self._columns)
 
 
+@deprecate(release="1.0.3", remove="2.0.0",
+           message="Use ``PropkaTraj(u, ..).run().pkas instead.")
 def get_propka(universe, sel='protein', start=None, stop=None, step=None, skip_failure=False):
-    """Get and store pKas for titrateable residues near the binding site.
+    """Get and store pKas for titrateable residues along trajectory.
 
     Parameters
     ----------

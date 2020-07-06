@@ -61,16 +61,16 @@ def test_single_frame_regression(tmpdir, u, selection):
         assert_almost_equal(pkas.values[0], ref_pkas, decimal=2)
 
 
-@pytest.mark.parametrize('selection', ['protein', 'ag', 'array'])
+@pytest.mark.parametrize('selection', ['protein', 'ag'])
 def test_single_frame_regression_analysisbase(tmpdir, u, selection):
     """Single frame PropkaTraj regression test"""
     with tmpdir.as_cwd():
         if selection == 'ag':
             pkatraj = propkatraj.PropkaTraj(u.select_atoms('protein'),
-                                            sel=None)
+                                            select=None)
         elif selection == 'array':
             selection = u.select_atoms('protein').ix
-            pkatraj = propkatraj.PropkaTraj(u, sel=selection)
+            pkatraj = propkatraj.PropkaTraj(u, select=selection)
         else:
             pkatraj = propkatraj.PropkaTraj(u)
 
@@ -176,3 +176,12 @@ def test_start_stop_step_analysisbase(tmpdir, u, start, stop, step):
         assert pkatraj.pkas.index.name == 'time'
         times = np.array(range(start, stop, step), dtype=np.float32) + 1
         assert_almost_equal(pkatraj.pkas.index.values, times, decimal=5)
+
+
+# remove in next version?
+def test_deprecate_get_propka(tmpdir, u):
+    """Checks that get_propka is now deprecated"""
+    wmsg = "will be removed in release 2.0.0"
+    with tmpdir.as_cwd():
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            pkas = propkatraj.get_propka(u, stop=1)
