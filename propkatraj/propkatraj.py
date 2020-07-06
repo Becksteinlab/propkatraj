@@ -33,7 +33,9 @@ class PropkaTraj(AnalysisBase):
         be automatically converted to :class:`MDAnalysis.AtomGroup`.
     select : str
         Selection string to use for selecting a subsection of atoms to use
-        from the input ``atomgroup``. [`protein`]
+        from the input ``atomgroup``. Note: passing non-protein residues to
+        :program:`propka` may lead to incorrect results (see notes).
+        [`protein`]
     skip_failure : bool
         If set to ``True``, skip frames where :program:`propka` fails. A list
         of failed frames is made available in
@@ -56,7 +58,17 @@ class PropkaTraj(AnalysisBase):
 
     Currently, temporary :program:`propka` files are written in the current
     working directory. This will leave a ``current.pka`` and
-    ``current.propka_input`` file.
+    ``current.propka_input`` file. These are the temporary files for the final
+    frame and can be removed safely.
+
+    Current known issues:
+
+    1. Due to the current behaviour of the MDAnalysis PDBWriter, non-protein
+       atoms are written to PDBs using `ATOM` records instead of `HETATM`.
+       This is likely to lead to undefined behaviour in :program:`propka`,
+       which will likely expect `HETATM` inputs. We recommend users to only
+       pass protein atoms for now. See the following issue for more details:
+       https://github.com/Becksteinlab/propkatraj/issues/24
 
 
     Examples
@@ -239,12 +251,32 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None,
         raise an exception. The default is ``False``.
         Log file (at level warning) contains information on failed frames.
 
+
     Results
     -------
     pkas : :class:`pandas.DataFrame`
         DataFrame giving estimated pKa value for each residue for each
         trajectory frame. Residue numbers are given as column labels, times as
         row labels.
+
+
+    Notes
+    -----
+    Currently, temporary :program:`propka` files are written in the same
+    directory as the input trajectory file. This will leave a ``current.pka``
+    and ``current.propka_input`` file post-analysis. These are the temporary
+    files for the final frame and can be removed. Should the trajectory file
+    not have an input directory (e.g. when using MDAnalysis' `fetch_mmtf`
+    method), then the files will be written to the current directory.
+
+    Known issues:
+
+    1. Due to the current behaviour of the MDAnalysis PDBWriter, non-protein
+       atoms are written to PDBs using `ATOM` records instead of `HETATM`.
+       This is likely to lead to undefined behaviour in :program:`propka`,
+       which will likely expect `HETATM` inputs. We recommend users to only
+       pass protein atoms for now. See the following issue for more details:
+       https://github.com/Becksteinlab/propkatraj/issues/24
 
     """
 
@@ -256,7 +288,12 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None,
 
     # "filename" for our stream
     # use same name so that propka overwrites
-    newname = os.path.join(os.path.dirname(universe.filename), 'current.pdb')
+    try:
+        newname = os.path.join(os.path.dirname(universe.filename),
+                               'current.pdb')
+    except TypeError:
+        # we have a trajectory without a directory
+        newname = os.path.join(os.path.curdir, 'current.pdb')
 
     # progress logging output (because this is slow...)
     pm = mda.lib.log.ProgressMeter(universe.trajectory.n_frames,
