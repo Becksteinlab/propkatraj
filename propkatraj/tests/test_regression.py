@@ -3,8 +3,6 @@ Tests that propkatraj can be imported.
 """
 from __future__ import print_function
 
-import sys
-
 import MDAnalysis as mda
 import numpy as np
 import pandas as pd
@@ -14,7 +12,12 @@ from MDAnalysisTests.datafiles import PSF, DCD
 from numpy.testing import assert_almost_equal, assert_equal
 
 import propkatraj
-from propkatraj.tests.datafiles import PSF_FRAME_ZERO_PKA, PSF_FRAME_NINETY_PKA
+from propkatraj.tests.datafiles import (PSF_FRAME_ZERO_PKA,
+                                        PSF_FRAME_NINETY_PKA,
+                                        INDEXERR_FRAME14_GRO,
+                                        INDEXERR_FRAME14_XTC,
+                                        ATTERR_FRAME1_PDB,
+                                        ATTERR_FRAME1_XTC,)
 
 
 @pytest.fixture(scope='module')
@@ -39,7 +42,7 @@ def pka_from_file(filename):
     return resnums, pkas
 
 
-@pytest.mark.parametrize('selection', ['protein', 'array'])
+@pytest.mark.parametrize('selection', ['protein', 'array', 'list'])
 def test_single_frame_regression(tmpdir, u, selection):
     """Single frame propkatraj call compared against same frame written by
     MDA
@@ -47,6 +50,8 @@ def test_single_frame_regression(tmpdir, u, selection):
     with tmpdir.as_cwd():
         if selection == 'array':
             selection = u.select_atoms('protein').ix
+        elif selection == 'list':
+            selection = u.select_atoms('protein').ix.tolist()
 
         pkas = propkatraj.get_propka(u, sel=selection, stop=1)
 
@@ -185,3 +190,33 @@ def test_deprecate_get_propka(tmpdir, u):
     with tmpdir.as_cwd():
         with pytest.warns(DeprecationWarning, match=wmsg):
             pkas = propkatraj.get_propka(u, stop=1)
+
+
+@pytest.mark.parametrize('top, traj', [
+    (INDEXERR_FRAME14_GRO, INDEXERR_FRAME14_XTC),
+    (ATTERR_FRAME1_PDB, ATTERR_FRAME1_XTC)
+])
+def test_skipframe_error(tmpdir, top, traj):
+    """Test for Issue #10 - Error raised"""
+    u = mda.Universe(top, traj)
+    with tmpdir.as_cwd():
+        with pytest.raises(RuntimeError, match="failing frame"):
+            pkas = propkatraj.get_propka(u)
+
+
+@pytest.mark.parametrize('top, traj, framenum', [
+    (INDEXERR_FRAME14_GRO, INDEXERR_FRAME14_XTC, 14),
+    (ATTERR_FRAME1_PDB, ATTERR_FRAME1_XTC, 1)
+])
+def test_skipframe_pass(tmpdir, caplog, top, traj, framenum):
+    """Test for Issue #10 - passes, logging raise"""
+    u = mda.Universe(top, traj)
+    with tmpdir.as_cwd():
+        pkas = propkatraj.get_propka(u, skip_failure=True)
+        perc = 1 / u.trajectory.n_frames * 100
+        wmsg = ['failing frame {0}'.format(framenum),
+                'number of failed frames = 1',
+                'percent failure = {0:.3f}%'.format(perc),
+                'failed frames: {0}'.format([framenum])]
+        for msg, rec in zip(wmsg, caplog.records):
+            assert msg in rec.message
