@@ -55,6 +55,10 @@ class PropkaTraj(AnalysisBase):
     Currently only the default behaviour supplemented with the `--quiet` flag
     of :program:`propka` is used.
 
+    Currently, temporary :program:`propka` files are written in the current
+    working directory. This will leave a ``current.pka`` and
+    ``current.propka_input`` file.
+
 
     Examples
     --------
@@ -147,8 +151,7 @@ class PropkaTraj(AnalysisBase):
             self.ag = atomgroup.atoms
 
         # TODO: probably needs to be a temporary directory instead
-        self.tmpfile = os.path.join(os.path.dirname(self.ag.universe.filename),
-                                    'current.pdb')
+        self.tmpfile = os.path.join(os.path.curdir, 'current.pdb')
         self.skip_failure = skip_failure
         super(PropkaTraj, self).__init__(self.ag.universe.trajectory, **kwargs)
 
