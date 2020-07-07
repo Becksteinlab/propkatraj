@@ -161,6 +161,16 @@ class PropkaTraj(AnalysisBase):
         else:
             self.ag = atomgroup.atoms
 
+        # Issue #23 (keep until the PDBWriter is fixed)
+        if len(self.ag.select_atoms('not protein')) > 0:
+            wmsg = ("Non protein atoms passed to propka 3.1.\n MDAnalysis' "
+                    "PDBWriter does not currently write non-standard residues "
+                    "correctly as HETATM records and this may lead to "
+                    "incorrect pKa predictions.\n"
+                    "See https://github.com/Becksteinlab/propkatraj/issues/24 "
+                    " for more details")
+            warnings.warn(wmsg)
+
         # TODO: probably needs to be a temporary directory instead
         self.tmpfile = os.path.join(os.path.curdir, 'current.pdb')
         self.skip_failure = skip_failure
@@ -220,7 +230,7 @@ class PropkaTraj(AnalysisBase):
                     "failed frames: {2}".format(self.num_failed_frames,
                                                 perc_failure,
                                                 self.failed_frames_log))
-            warnings.warn(wmsg)
+            logging.warning(wmsg)
 
         self.pkas = pd.DataFrame(self._pkas, index=pd.Float64Index(times,
                                  name='time'), columns=self._columns)
@@ -285,6 +295,16 @@ def get_propka(universe, sel='protein', start=None, stop=None, step=None,
         atomsel = universe.select_atoms(sel)
     elif isinstance(sel, (list, np.ndarray)):
         atomsel = universe.atoms[sel]
+
+    # Issue #23 (keep until the PDBWriter is fixed)
+    if len(atomsel.select_atoms('not protein')) > 0:
+        wmsg = ("Non protein atoms passed to propka 3.1.\n MDAnalysis' "
+                "PDBWriter does not currently write non-standard residues "
+                "correctly as HETATM records and this may lead to "
+                "incorrect pKa predictions.\n"
+                "See https://github.com/Becksteinlab/propkatraj/issues/24 "
+                " for more details")
+        warnings.warn(wmsg)
 
     # "filename" for our stream
     # use same name so that propka overwrites

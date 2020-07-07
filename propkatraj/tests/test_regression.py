@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, GRO, XTC
 from numpy.testing import assert_almost_equal, assert_equal
 
 import propkatraj
@@ -24,6 +24,15 @@ from propkatraj.tests.datafiles import (PSF_FRAME_ZERO_PKA,
 @pytest.fixture(scope='module')
 def u():
     return mda.Universe(PSF, DCD)
+
+
+@pytest.fixture(scope='module', params=(
+    (INDEXERR_FRAME14_GRO, INDEXERR_FRAME14_XTC),
+    (ATTERR_FRAME1_PDB, ATTERR_FRAME1_XTC)
+))
+def u_badframe(request):
+    top, traj = request.param
+    return mda.Universe(top, traj)
 
 
 @pytest.fixture(scope='module')
@@ -193,18 +202,6 @@ def test_deprecate_get_propka(tmpdir, u):
             pkas = propkatraj.get_propka(u, stop=1)
 
 
-@pytest.mark.parametrize('top, traj', [
-    (INDEXERR_FRAME14_GRO, INDEXERR_FRAME14_XTC),
-    (ATTERR_FRAME1_PDB, ATTERR_FRAME1_XTC)
-])
-def test_skipframe_error(tmpdir, top, traj):
-    """Test for Issue #10 - Error raised"""
-    u = mda.Universe(top, traj)
-    with tmpdir.as_cwd():
-        with pytest.raises(RuntimeError, match="failing frame"):
-            pkas = propkatraj.get_propka(u)
-
-
 def test_mmtf_nofilename(tmpdir):
     """See issue #23"""
     # Everyone's favourite BRD4 model
@@ -213,6 +210,21 @@ def test_mmtf_nofilename(tmpdir):
     with tmpdir.as_cwd():
         pkas = propkatraj.get_propka(u)
         assert os.path.isfile('current.pka')
+
+
+def test_skipframe_error(tmpdir, u_badframe):
+    """Test for Issue #10 - Error raised"""
+    with tmpdir.as_cwd():
+        with pytest.raises(RuntimeError, match="failing frame"):
+            pkas = propkatraj.get_propka(u_badframe)
+
+
+def test_skipframe_error_analysisbase(tmpdir, u_badframe):
+    """Test for Issue #10 - Error raised"""
+    with tmpdir.as_cwd():
+        with pytest.raises(RuntimeError, match="failure on frame"):
+            pkatraj = propkatraj.PropkaTraj(u_badframe)
+            pkatraj.run()
 
 
 @pytest.mark.parametrize('top, traj, framenum', [
@@ -232,3 +244,41 @@ def test_skipframe_pass(tmpdir, caplog, top, traj, framenum):
         for msg, rec in zip(wmsg, caplog.records):
             assert msg in rec.message
 
+
+@pytest.mark.parametrize('top, traj, framenum', [
+    (INDEXERR_FRAME14_GRO, INDEXERR_FRAME14_XTC, 14),
+    (ATTERR_FRAME1_PDB, ATTERR_FRAME1_XTC, 1)
+])
+def test_skipframe_pass_analysisbase(tmpdir, caplog, top, traj, framenum):
+    """Test for Issue #10 - passes, logging raise"""
+    u = mda.Universe(top, traj)
+    with tmpdir.as_cwd():
+        wmsg = "failure on frame: {0}".format(framenum)
+        with pytest.warns(UserWarning, match=wmsg):
+            pkatraj = propkatraj.PropkaTraj(u, skip_failure=True)
+            pkatraj.run()
+
+        perc = 1 / u.trajectory.n_frames * 100
+
+        msg = ("number of failed frames = 1\n"
+               "percentage failure = {0}\n"
+               "failed frames: {1}".format(perc, [framenum]))
+        assert msg in caplog.records[0].message
+
+
+def test_nonprotein_residues(tmpdir):
+    """Test for Issue #24 - remove once PDBWriter is fixed"""
+    u = mda.Universe(GRO, XTC)
+    with tmpdir.as_cwd():
+        wmsg = "Non protein atoms passed"
+        with pytest.warns(UserWarning, match=wmsg):
+            pkas = propkatraj.get_propka(u, sel="not protein", stop=1)
+
+
+def test_nonprotein_residues_analysisbase(tmpdir):
+    """Test for Issue #24 - remove once PDBWriter is fixed"""
+    u = mda.Universe(GRO, XTC)
+    with tmpdir.as_cwd():
+        wmsg = "Non protein atoms passed"
+        with pytest.warns(UserWarning, match=wmsg):
+            pkatraj = propkatraj.PropkaTraj(u, select="not protein")
