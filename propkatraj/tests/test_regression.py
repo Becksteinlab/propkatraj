@@ -2,6 +2,7 @@
 Tests that propkatraj can be imported.
 """
 from __future__ import print_function
+import os
 
 import MDAnalysis as mda
 import numpy as np
@@ -204,6 +205,16 @@ def test_skipframe_error(tmpdir, top, traj):
             pkas = propkatraj.get_propka(u)
 
 
+def test_mmtf_nofilename(tmpdir):
+    """See issue #23"""
+    # Everyone's favourite BRD4 model
+    u = mda.fetch_mmtf('4LYI')
+
+    with tmpdir.as_cwd():
+        pkas = propkatraj.get_propka(u)
+        assert os.path.isfile('current.pka')
+
+
 @pytest.mark.parametrize('top, traj, framenum', [
     (INDEXERR_FRAME14_GRO, INDEXERR_FRAME14_XTC, 14),
     (ATTERR_FRAME1_PDB, ATTERR_FRAME1_XTC, 1)
@@ -220,3 +231,4 @@ def test_skipframe_pass(tmpdir, caplog, top, traj, framenum):
                 'failed frames: {0}'.format([framenum])]
         for msg, rec in zip(wmsg, caplog.records):
             assert msg in rec.message
+
