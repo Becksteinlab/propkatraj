@@ -23,7 +23,9 @@ class PropkaTraj(AnalysisBase):
     """Per residue pKa analysis of a trajectory.
 
     Runs :program:`propka` on the titrateable residues of the selected
-    AtomGroup on each frame in the trajectory.
+    AtomGroup on each frame in the trajectory. Run the analysis with
+    :meth:`PropkaTraj.run`, and pKa values will be stored in a
+    :class:`pandas.DataFrame` named :attr:`PropkaTraj.pkas`.
 
     Parameters
     ----------
@@ -43,23 +45,15 @@ class PropkaTraj(AnalysisBase):
         RuntimeError exception on those frames. [`False`]
 
 
-    Returns
-    -------
-    pkas : :class:`pandas.DataFrame`
-        DataFrame giving the estimated pKa value for each titrateable residue
-        for each trajectory frame. Residue numbers are given as column labels,
-        times as row labels.
-
-
     Notes
     -----
     Currently only the default behaviour supplemented with the `--quiet` flag
     of :program:`propka` is used.
 
-    Currently, temporary :program:`propka` files are written in the current
-    working directory. This will leave a ``current.pka`` and
-    ``current.propka_input`` file. These are the temporary files for the final
-    frame and can be removed safely.
+    Temporary :program:`propka` files are written in the current working
+    directory. This will leave a ``current.pka`` and ``current.propka_input``
+    file. These are the temporary files for the final frame and can be removed
+    safely.
 
     Current known issues:
 

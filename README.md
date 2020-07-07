@@ -26,57 +26,96 @@ for how to install everything.
 
 ## Usage
 
-The `propkatraj.get_propka()` function contains all
+The `propkatraj.PropkaTraj` class contains all
 functionality. Import it with
 
 ```python
-from propkatraj import get_propka
+from propkatraj import PropkaTraj
 ```
 
-It takes a `MDAnalysis.Universe` instance as an argument and runs PROPKA on each
-frame of the trajectory.
+It takes a `MDAnalysis.AtomGroup` or `MDAnalysis.Universe` instance as an
+argument to initialize and runs PROPKA on each frame of the trajectory when
+calling the `run()` method. See help(PropkaTraj) for more details.
 
-```
-get_propka(universe, sel='protein', start=None, stop=None, step=None)
+```python
+pkatraj = PropkaTraj(atomgroup, select='protein', skip_failure=False)
 
-   Get and store pKas for titrateable residues near the binding site.
+   Runs :program:`propka` on the titrateable residues of the selected AtomGroup
+   on each frame in the trajectory.
    
    Parameters
    ----------
-   universe : :class:`MDAnalysis.Universe`
-	   Universe to obtain pKas for.
-   sel : str, array_like
-	   Selection string to use for selecting atoms to use from given
-	   ``universe``. Can also be a numpy array or list of atom indices to use.
-   start : int
-	   Frame of trajectory to start from. `None` means start from beginning.
-   stop : int
-	   Frame of trajectory to end at. `None` means end at trajectory end.
-   step : int
-	   Step by which to iterate through trajectory frames. propka is slow,
-	   so set according to how finely you need resulting timeseries.
+   atomgroup : :class:`MDAnalysis.Universe` or :class:`MDAnalysis.AtomGroup`
+       Group of atoms containing the residues for pKa analysis. Please note
+       that :class:`MDAnalysis.UpdatingAtomGroup` are not supported and will
+       be automatically converted to :class:`MDAnalysis.AtomGroup`.
+   select : str
+       Selection string to use for selecting a subsection of atoms to use
+       from the input ``atomgroup``. Note: passing non-protein residues to
+       :program:`propka` may lead to incorrect results (see notes). [`protein`]
+   skip_failure : bool
+       If set to ``True``, skip frames where :program:`propka` fails. A list
+       of failed frames is made available in
+       :attr:`PropkaTraj.failed_frames_log`. If ``False`` raise a
+       RuntimeError exception on those frames. [`False`]
 
-   Results
-   -------
-   pkas : :class:`pandas.DataFrame`
-	   DataFrame giving estimated pKa value for each residue for each
-	   trajectory frame. Residue numbers are given as column labels, times as
-	   row labels.
+
+    Notes
+    -----
+    Currently only the default behaviour supplemented with the `--quiet` flag
+    of :program:`propka` is used.
+
+    Temporary :program:`propka` files are written in the current working
+    directory. This will leave a ``current.pka`` and ``current.propka_input``
+    file. These are the temporary files for the final frame and can be removed
+    safely.
+
+    Current known issues:
+
+    1. Due to the current behaviour of the MDAnalysis PDBWriter, non-protein
+       atoms are written to PDBs using `ATOM` records instead of `HETATM`.
+       This is likely to lead to undefined behaviour in :program:`propka`,
+       which will likely expect `HETATM` inputs. We recommend users to only
+       pass protein atoms for now. See the following issue for more details:
+       https://github.com/Becksteinlab/propkatraj/issues/24
+
+
+pkatraj.run()
+
+   Perform the calculation
+
+   Parameters
+   ----------
+   start : int, optional
+      start frame of analysis
+   stop : int, optional
+      stop frame of analysis
+   step : int, optional
+      number of frames to skip between each analysed frame
+   verbose : bool, optional
+      Turn on verbosity
+
 ```
 
-The function returns a
+Calling the `run()` method creates a
 [pandas.DataFrame](http://pandas.pydata.org/pandas-docs/stable/dsintro.html#dataframe)
-which contains the time as the first column and the residue numbers as
-subsequent columns. For each time step, the predicted pKa value for
-this residue is stored. Process the `DataFrame` to obtain statistics
+attribute named `pkas` which contains the time as the first column and the
+residue numbers as subsequent columns. For each time step, the predicted pKa
+value for this residue is stored. Process the `DataFrame` to obtain statistics
 as shown in the [Documentation](#Documentation).
 
+For example, you can get a summary of the statistics of the timeseries in the
+following manner:
+
+```python
+pkatraj.pkas.describe()
+```
 
 ## Documentation
 
 See the Jupyter notebook
 [docs/propkatraj-example.ipynb](https://nbviewer.jupyter.org/github/Becksteinlab/propkatraj/blob/master/docs/propkatraj-example.ipynb)
-for how to use `propkatraj.get_propka` on an example trajectory and
+for how to use `propkatraj.PropkaTraj` on an example trajectory and
 how to plot the data with [seaborn](https://seaborn.pydata.org/).
 
 ## Citation
