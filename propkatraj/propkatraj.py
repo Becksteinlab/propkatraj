@@ -165,7 +165,6 @@ class PropkaTraj(AnalysisBase):
                     " for more details")
             warnings.warn(wmsg)
 
-        # TODO: probably needs to be a temporary directory instead
         self.tmpfile = os.path.join(os.path.curdir, 'current.pdb')
         self.skip_failure = skip_failure
         super(PropkaTraj, self).__init__(self.ag.universe.trajectory, **kwargs)
