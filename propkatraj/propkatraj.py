@@ -1,5 +1,5 @@
 # propkatrj --- https://github.com/Becksteinlab/propkatraj
-# Copyright (c) 2013-2017 David Dotson, Ricky Sexton, Armin Zjajo, Oliver Beckstein
+# Copyright (c) 2013-2020 David Dotson, Irfan Alibay, Ricky Sexton, Armin Zjajo, Shujie Fan, Oliver Beckstein
 # Released under the GNU General Public License v3+
 
 from __future__ import print_function, division
@@ -146,7 +146,7 @@ class PropkaTraj(AnalysisBase):
       fig.savefig('pKa-plot.png')
 
 
-    .. versionadded:: 1.0.3
+    .. versionadded:: 1.1.0
     """
     def __init__(self, atomgroup, select='protein', skip_failure=False,
                  **kwargs):
@@ -209,15 +209,14 @@ class PropkaTraj(AnalysisBase):
             pstream.close(force=True)
 
     def _conclude(self):
-        # to allow for popping times later, convert self.times to list
-        times = self.times.tolist()
-
         # Ouput failed frames
         if self.num_failed_frames > 0:
             perc_failure = (self.num_failed_frames / self.n_frames) * 100
+
             # if frames have failed we need to ammend times accordingly
-            for i in self.failed_times:
-                times.remove(i)
+            failed_indices = [np.where(self.times == i) for i in
+                              self.failed_times]
+            self.times = np.delete(self.times, failed_indices)
 
             wmsg = ("number of failed frames = {0}\n"
                     "percentage failure = {1}\n"
@@ -226,7 +225,7 @@ class PropkaTraj(AnalysisBase):
                                                 self.failed_frames_log))
             logging.warning(wmsg)
 
-        self.pkas = pd.DataFrame(self._pkas, index=pd.Float64Index(times,
+        self.pkas = pd.DataFrame(self._pkas, index=pd.Float64Index(self.times,
                                  name='time'), columns=self._columns)
 
 

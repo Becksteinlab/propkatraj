@@ -264,6 +264,9 @@ def test_skipframe_pass_analysisbase(tmpdir, caplog, top, traj, framenum):
                "percentage failure = {0}\n"
                "failed frames: {1}".format(perc, [framenum]))
         assert msg in caplog.records[0].message
+        # times should have been modified in-place
+        assert len(pkatraj.times) == (len(u.trajectory) - 1)
+        assert u.trajectory[framenum].time not in pkatraj.times
 
 
 def test_nonprotein_residues(tmpdir):
