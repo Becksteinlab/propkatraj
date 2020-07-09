@@ -39,10 +39,21 @@ Use the `--user` flag for `pip` to install among your local user packages.
 
 The following should then work (inside the `python` interpreter or in a Python script):
 
-    from propkatraj import get_propka
+    from propkatraj import PropkaTraj
 
-The `propkatraj.get_propka()` function contains all functionality. 
+The `propkatraj.PropkaTraj` class contains all functionality. 
 
 Open the Jupyter notebook in
 [`docs/propkatraj-example.ipynb`](https://nbviewer.jupyter.org/github/Becksteinlab/propkatraj/blob/master/docs/propkatraj-example.ipynb)
 and run it.
+
+Regression tests are also provided under propkatraj/tests.
+
+To run these you will need access to the
+[pytest](https://docs.pytest.org/en/latest/index.html) package. This can be
+installed either using `pip` or `conda`.
+
+You can run the tests in the following way:
+
+    pytest -v --disable-pytest-warnings propkatraj/tests
+

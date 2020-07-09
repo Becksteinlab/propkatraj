@@ -3,7 +3,6 @@ Tests that propkatraj can be imported.
 """
 
 import sys
-import pytest
 import propkatraj
 
 
