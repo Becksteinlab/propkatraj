@@ -230,7 +230,7 @@ class PropkaTraj(AnalysisBase):
                                  name='time'), columns=self._columns)
 
 
-@deprecate(release="1.0.3", remove="2.0.0",
+@deprecate(release="1.1.0", remove="2.0.0",
            message="Use ``PropkaTraj(u, ..).run().pkas instead.")
 def get_propka(universe, sel='protein', start=None, stop=None, step=None,
                skip_failure=False):
