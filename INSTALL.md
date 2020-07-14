@@ -22,7 +22,7 @@ propkatraj](https://pypi.org/project/propkatraj/) with
     pip install propkatraj
 	
 which will install all additional dependencies such as [PROPKA
-3.1](https://github.com/jensengroup/propka-3.1).
+3](https://github.com/jensengroup/propka).
 
 
 ## Source installation
@@ -47,7 +47,7 @@ Open the Jupyter notebook in
 [`docs/propkatraj-example.ipynb`](https://nbviewer.jupyter.org/github/Becksteinlab/propkatraj/blob/master/docs/propkatraj-example.ipynb)
 and run it.
 
-Regression tests are also provided under propkatraj/tests.
+Regression tests are also provided under `propkatraj/tests`.
 
 To run these you will need access to the
 [pytest](https://docs.pytest.org/en/latest/index.html) package. This can be

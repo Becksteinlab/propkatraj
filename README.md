@@ -7,7 +7,7 @@
 protein residues. We use an ensemble approach where many different
 conformations are sampled with equilibrium molecular dynamics
 simulations. We then apply the fast heuristic pKa predictor
-[PROPKA 3.1](https://github.com/jensengroup/propka-3.1) to individual
+[PROPKA 3](https://github.com/jensengroup/propka) to individual
 frames of the trajectory. By analysing the statistics of the pKa
 predictions a more consistent picture emerges than from a pKa
 prediction of a single static conformation.
@@ -15,7 +15,7 @@ prediction of a single static conformation.
 
 ## Required software
 
-* [PROPKA 3.1](https://github.com/jensengroup/propka-3.1) (used as a
+* [PROPKA 3](https://github.com/jensengroup/propka) (used as a
   Python package)
 * [MDAnalysis](https://mdanalysis.org)
 * [pandas](https://pandas.pydata.org/)
@@ -35,7 +35,7 @@ from propkatraj import PropkaTraj
 
 It takes a `MDAnalysis.AtomGroup` or `MDAnalysis.Universe` instance as an
 argument to initialize and runs PROPKA on each frame of the trajectory when
-calling the `run()` method. See help(PropkaTraj) for more details.
+calling the `run()` method. See `help(PropkaTraj)` for more details.
 
 ```python
 pkatraj = PropkaTraj(atomgroup, select='protein', skip_failure=False)

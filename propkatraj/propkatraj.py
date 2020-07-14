@@ -1,5 +1,6 @@
 # propkatrj --- https://github.com/Becksteinlab/propkatraj
-# Copyright (c) 2013-2020 David Dotson, Irfan Alibay, Ricky Sexton, Armin Zjajo, Shujie Fan, Oliver Beckstein
+# Copyright (c) 2013-2020 David Dotson, Irfan Alibay, Ricky Sexton,
+#                         Armin Zjajo, Shujie Fan, Oliver Beckstein
 # Released under the GNU General Public License v3+
 
 from __future__ import print_function, division
