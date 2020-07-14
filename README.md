@@ -137,9 +137,8 @@ is for the software if you need a specific software citation.
    144(6):529–544, 2014. doi:
    [10.1085/jgp.201411219](https://doi.org/10.1085/jgp.201411219).
 
-3. Oliver Beckstein, David Dotson, Rick Sexton, Shujie Fan, and Armin Zijajo. 
-   (2019, May 24). Becksteinlab/propkatraj: 1.0.0 (Version release-1.0.0). 
-   Zenodo. http://doi.org/10.5281/zenodo.3228426
+3. David Dotson, Irfan Alibay, Rick Sexton, Shujie Fan, Armin Zijajo, Oliver Beckstein. 
+   (2020). Becksteinlab/propkatraj: 1.1.x. Zenodo. https://doi.org/10.5281/zenodo.3228425 
 
 ## Contact
 
