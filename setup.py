@@ -9,7 +9,7 @@ For a basic installation just type the command::
 
 import sys
 from setuptools import setup, find_packages
-
+import versioneer
 
 # Make sure we have the right python version (2.7+)
 if sys.version_info[:2] < (2, 7):
@@ -17,7 +17,8 @@ if sys.version_info[:2] < (2, 7):
     sys.exit(-1)
 
 setup(name='propkatraj',
-      version='1.0.2',
+      version=versioneer.get_version(),
+      cmdclass=versioneer.get_cmdclass(),
       description='obtain pKas for titreatable residues from a simulation trajectory',
       author='David Dotson',
       author_email='dotsdl@gmail.com',

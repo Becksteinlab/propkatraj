@@ -90,3 +90,10 @@ ENV/
 
 # cached filed
 *.npz
+
+# editor files
+*~
+
+# propka junk
+current.pka
+current.propka_input
