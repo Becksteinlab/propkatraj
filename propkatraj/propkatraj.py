@@ -170,7 +170,7 @@ class PropkaTraj(AnalysisBase):
 
         self.tmpfile = os.path.join(os.path.curdir, 'current.pdb')
         self.skip_failure = skip_failure
-        super(PropkaTraj, self).__init__(self.ag.universe.trajectory, **kwargs)
+        super().__init__(self.ag.universe.trajectory, **kwargs)
 
     def _prepare(self):
         self._pkas = []
