@@ -1,6 +1,7 @@
 """
 Tests that propkatraj can be imported.
 """
+
 from __future__ import print_function
 import os
 
@@ -52,32 +53,8 @@ def pka_from_file(filename):
     return resnums, pkas
 
 
-@pytest.mark.parametrize('selection', ['protein', 'array', 'list'])
+@pytest.mark.parametrize('selection', ['protein', 'ag', 'array', 'list'])
 def test_single_frame_regression(tmpdir, u, selection):
-    """Single frame propkatraj call compared against same frame written by
-    MDA
-    """
-    with tmpdir.as_cwd():
-        if selection == 'array':
-            selection = u.select_atoms('protein').ix
-        elif selection == 'list':
-            selection = u.select_atoms('protein').ix.tolist()
-
-        pkas = propkatraj.get_propka(u, sel=selection, stop=1)
-
-        # load reference data
-        ref_resnums, ref_pkas = pka_from_file(PSF_FRAME_ZERO_PKA)
-
-        # test residue numbers
-        resnums = pkas.columns.to_numpy()
-        assert_equal(resnums, ref_resnums)
-
-        # test pka values
-        assert_almost_equal(pkas.values[0], ref_pkas, decimal=2)
-
-
-@pytest.mark.parametrize('selection', ['protein', 'ag'])
-def test_single_frame_regression_analysisbase(tmpdir, u, selection):
     """Single frame PropkaTraj regression test"""
     with tmpdir.as_cwd():
         if selection == 'ag':
@@ -86,6 +63,8 @@ def test_single_frame_regression_analysisbase(tmpdir, u, selection):
         elif selection == 'array':
             selection = u.select_atoms('protein').ix
             pkatraj = propkatraj.PropkaTraj(u, select=selection)
+        elif selection == 'list':
+            selection = u.select_atoms('protein').ix.tolist()
         else:
             pkatraj = propkatraj.PropkaTraj(u)
 
@@ -103,28 +82,6 @@ def test_single_frame_regression_analysisbase(tmpdir, u, selection):
 
 
 def test_multi_frame_regression(tmpdir, u, glu_ref):
-    """Multiframe propkatraj call basic regression test
-
-    Note: slow test
-    """
-    with tmpdir.as_cwd():
-        pkas = propkatraj.get_propka(u, step=10)
-
-        # load reference data for resnum and last frame pka
-        ref_resnums, ref_pkas = pka_from_file(PSF_FRAME_NINETY_PKA)
-
-        # test residue numbers
-        resnums = pkas.columns.to_numpy()
-        assert_equal(resnums, ref_resnums)
-
-        # test final frame pka values
-        assert_almost_equal(pkas.values[-1], ref_pkas, decimal=2)
-
-        # test one data series: glu 162
-        assert_almost_equal(pkas[162].values, glu_ref, decimal=2)
-
-
-def test_multi_frame_regression_analysisbase(tmpdir, u, glu_ref):
     """Multiframe propkatraj call basic regression test
 
     Note: slow test
@@ -154,7 +111,9 @@ def test_start_stop_step(tmpdir, u, start, stop, step):
     """Basic test to make sure the dataframe gets populated with the right
     dimensions"""
     with tmpdir.as_cwd():
-        pkas = propkatraj.get_propka(u, start=start, stop=stop, step=step)
+        propka = propkatraj.PropkaTraj(u)
+        propka.run(start=start, stop=stop, step=step)
+        pkas = propka.pkas
 
         start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
 
@@ -170,56 +129,17 @@ def test_start_stop_step(tmpdir, u, start, stop, step):
         assert_almost_equal(pkas.index.values, times, decimal=5)
 
 
-@pytest.mark.parametrize('start, stop, step', [
-    (None, 5, None), (None, None, 25)
-])
-def test_start_stop_step_analysisbase(tmpdir, u, start, stop, step):
-    """Basic test to make sure the dataframe gets populated with the right
-    dimensions"""
-    with tmpdir.as_cwd():
-        pkatraj = propkatraj.PropkaTraj(u)
-        pkatraj.run(start=start, stop=stop, step=step)
-
-        start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
-        nframes = len(range(start, stop, step))
-
-        # There should be nframes rows and 75 columns
-        assert len(pkatraj.pkas) == nframes
-        assert len(pkatraj.pkas.columns) == 75
-
-        # index should be time
-        assert pkatraj.pkas.index.name == 'time'
-        times = np.array(range(start, stop, step), dtype=np.float32) + 1
-        assert_almost_equal(pkatraj.pkas.index.values, times, decimal=5)
-
-
-# remove in next version?
-def test_deprecate_get_propka(tmpdir, u):
-    """Checks that get_propka is now deprecated"""
-    wmsg = "will be removed in release 2.0.0"
-    with tmpdir.as_cwd():
-        with pytest.warns(DeprecationWarning, match=wmsg):
-            pkas = propkatraj.get_propka(u, stop=1)
-
-
 def test_mmtf_nofilename(tmpdir):
     """See issue #23"""
     # Everyone's favourite BRD4 model
     u = mda.fetch_mmtf('4LYI')
 
     with tmpdir.as_cwd():
-        pkas = propkatraj.get_propka(u)
+        _ = propkatraj.PropkaTraj(u).run().pkas
         assert os.path.isfile('current.pka')
 
 
 def test_skipframe_error(tmpdir, u_badframe):
-    """Test for Issue #10 - Error raised"""
-    with tmpdir.as_cwd():
-        with pytest.raises(RuntimeError, match="failing frame"):
-            pkas = propkatraj.get_propka(u_badframe)
-
-
-def test_skipframe_error_analysisbase(tmpdir, u_badframe):
     """Test for Issue #10 - Error raised"""
     with tmpdir.as_cwd():
         with pytest.raises(RuntimeError, match="failure on frame"):
@@ -232,24 +152,6 @@ def test_skipframe_error_analysisbase(tmpdir, u_badframe):
     (ATTERR_FRAME1_PDB, ATTERR_FRAME1_XTC, 1)
 ])
 def test_skipframe_pass(tmpdir, caplog, top, traj, framenum):
-    """Test for Issue #10 - passes, logging raise"""
-    u = mda.Universe(top, traj)
-    with tmpdir.as_cwd():
-        pkas = propkatraj.get_propka(u, skip_failure=True)
-        perc = 1 / u.trajectory.n_frames * 100
-        wmsg = ['failing frame {0}'.format(framenum),
-                'number of failed frames = 1',
-                'percent failure = {0:.3f}%'.format(perc),
-                'failed frames: {0}'.format([framenum])]
-        for msg, rec in zip(wmsg, caplog.records):
-            assert msg in rec.message
-
-
-@pytest.mark.parametrize('top, traj, framenum', [
-    (INDEXERR_FRAME14_GRO, INDEXERR_FRAME14_XTC, 14),
-    (ATTERR_FRAME1_PDB, ATTERR_FRAME1_XTC, 1)
-])
-def test_skipframe_pass_analysisbase(tmpdir, caplog, top, traj, framenum):
     """Test for Issue #10 - passes, logging raise"""
     u = mda.Universe(top, traj)
     with tmpdir.as_cwd():
@@ -275,13 +177,4 @@ def test_nonprotein_residues(tmpdir):
     with tmpdir.as_cwd():
         wmsg = "Non protein atoms passed"
         with pytest.warns(UserWarning, match=wmsg):
-            pkas = propkatraj.get_propka(u, sel="not protein", stop=1)
-
-
-def test_nonprotein_residues_analysisbase(tmpdir):
-    """Test for Issue #24 - remove once PDBWriter is fixed"""
-    u = mda.Universe(GRO, XTC)
-    with tmpdir.as_cwd():
-        wmsg = "Non protein atoms passed"
-        with pytest.warns(UserWarning, match=wmsg):
-            pkatraj = propkatraj.PropkaTraj(u, select="not protein")
+            _ = propkatraj.PropkaTraj(u, select="not protein")

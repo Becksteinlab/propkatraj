@@ -47,5 +47,5 @@ setup(name='propkatraj',
       license='GPLv3',
       long_description=open('README.md').read(),
       long_description_content_type='text/markdown; variant=GFM',
-      install_requires=['six', 'numpy', 'pandas', 'MDAnalysis<2.0.0', 'propka==3.1']
+      install_requires=['six', 'numpy', 'pandas', 'MDAnalysis', 'propka==3.1']
       )
