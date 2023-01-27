@@ -65,6 +65,7 @@ def test_single_frame_regression(tmpdir, u, selection):
             pkatraj = propkatraj.PropkaTraj(u, select=selection)
         elif selection == 'list':
             selection = u.select_atoms('protein').ix.tolist()
+            pkatraj = propkatraj.PropkaTraj(u, select=selection)
         else:
             pkatraj = propkatraj.PropkaTraj(u)
 
