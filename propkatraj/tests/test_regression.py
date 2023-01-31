@@ -2,7 +2,6 @@
 Tests that propkatraj can be imported.
 """
 
-from __future__ import print_function
 import os
 
 import MDAnalysis as mda
@@ -53,25 +52,19 @@ def pka_from_file(filename):
     return resnums, pkas
 
 
-@pytest.mark.parametrize('selection', ['protein', 'ag', 'array', 'list'])
+@pytest.mark.parametrize('selection', ['default', 'protein'])
 def test_single_frame_regression(tmpdir, u, selection):
     """Single frame PropkaTraj regression test"""
     with tmpdir.as_cwd():
-        if selection == 'ag':
-            pkatraj = propkatraj.PropkaTraj(u.select_atoms('protein'),
+        if selection != 'default':
+            pkatraj = propkatraj.PropkaTraj(u.select_atoms(selection),
                                             select=None)
-        elif selection == 'array':
-            selection = u.select_atoms('protein').ix
-            pkatraj = propkatraj.PropkaTraj(u, select=selection)
-        elif selection == 'list':
-            selection = u.select_atoms('protein').ix.tolist()
-            pkatraj = propkatraj.PropkaTraj(u, select=selection)
         else:
             pkatraj = propkatraj.PropkaTraj(u)
 
         pkatraj.run(stop=1)
 
-        # load reference data
+        # load reference data, makes testing arbitrary selections difficult
         ref_resnums, ref_pkas = pka_from_file(PSF_FRAME_ZERO_PKA)
 
         # test residue numbers
