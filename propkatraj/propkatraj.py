@@ -5,7 +5,7 @@
 
 from __future__ import print_function, division
 
-from six import StringIO, raise_from
+from io import StringIO
 import os
 
 import pandas as pd
@@ -151,10 +151,7 @@ class PropkaTraj(AnalysisBase):
     def __init__(self, atomgroup, select='protein', skip_failure=False,
                  **kwargs):
         if select is not None:
-            if not isinstance(select, str):
-                self.ag = atomgroup.atoms[select].atoms
-            else:
-                self.ag = atomgroup.select_atoms(select).atoms
+            self.ag = atomgroup.select_atoms(select).atoms
         else:
             self.ag = atomgroup.atoms
 
@@ -191,7 +188,7 @@ class PropkaTraj(AnalysisBase):
         except (IndexError, AttributeError) as err:
             errmsg = "failure on frame: {0}".format(self._ts.frame)
             if not self.skip_failure:
-                raise_from(RuntimeError(errmsg), err)
+                raise RuntimeError(errmsg) from err
             else:
                 warnings.warn(errmsg)
                 self.num_failed_frames += 1
