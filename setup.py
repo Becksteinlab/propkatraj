@@ -23,13 +23,10 @@ setup(name='propkatraj',
                    'Programming Language :: Python',
                    'Topic :: Scientific/Engineering',
                    'Topic :: Software Development :: Libraries :: Python Modules',
-                   'Programming Language :: Python :: 2',
-                   'Programming Language :: Python :: 2.7',
-                   'Programming Language :: Python :: 3',
-                   'Programming Language :: Python :: 3.5',
-                   'Programming Language :: Python :: 3.6',
-                   'Programming Language :: Python :: 3.7',
                    'Programming Language :: Python :: 3.8',
+                   'Programming Language :: Python :: 3.9',
+                   'Programming Language :: Python :: 3.10',
+                   'Programming Language :: Python :: 3.11',
                    ],
       project_urls={
           'Documentation': 'https://github.com/Becksteinlab/propkatraj/blob/master/README.md',
@@ -42,5 +39,5 @@ setup(name='propkatraj',
       long_description=open('README.md').read(),
       long_description_content_type='text/markdown; variant=GFM',
       python_requires='>=3.8',
-      install_requires=['numpy', 'pandas', 'MDAnalysis>2.0.0', 'propka==3.1']
+      install_requires=['numpy', 'pandas', 'MDAnalysis>=2.0.0', 'propka==3.1']
       )
