@@ -108,7 +108,7 @@ jobs:
       run: |
         which pip
         which python
-        pip install pylint
+        pip install pylint MDAnalysis>=2.0.0
     - name: Run Pylint
       env:
         PYLINTRC: .pylintrc
