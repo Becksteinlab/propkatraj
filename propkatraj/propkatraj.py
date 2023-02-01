@@ -3,8 +3,6 @@
 #                         Armin Zjajo, Shujie Fan, Oliver Beckstein
 # Released under the GNU General Public License v3+
 
-from __future__ import print_function, division
-
 from io import StringIO
 import os
 
