@@ -52,13 +52,15 @@ def pka_from_file(filename):
     return resnums, pkas
 
 
-@pytest.mark.parametrize('selection', ['default', 'protein'])
+@pytest.mark.parametrize('selection', ['default', 'ag', 'protein'])
 def test_single_frame_regression(tmpdir, u, selection):
     """Single frame PropkaTraj regression test"""
     with tmpdir.as_cwd():
         if selection != 'default':
-            pkatraj = propkatraj.PropkaTraj(u.select_atoms(selection),
-                                            select=None)
+            if selection == 'ag':  # special case, feed in atomgroup directly
+                pkatraj = propkatraj.PropkaTraj(u.select_atoms('protein'))
+            else:  # pass the selection to the select kwarg
+                pkatraj = propkatraj.PropkaTraj(u, select=selection)
         else:
             pkatraj = propkatraj.PropkaTraj(u)
 
