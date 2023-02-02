@@ -90,7 +90,6 @@ jobs:
       run: |
         pytest -v --color=yes propkatraj/tests/
 
-
   pylint_check:
     if: "github.repository == 'Becksteinlab/propkatraj'"
     needs: environment-config
@@ -114,6 +113,7 @@ jobs:
         PYLINTRC: .pylintrc
       run: |
         pylint propkatraj
+
   pypi_check:
     if: "github.repository == 'Becksteinlab/propkatraj'"
     needs: environment-config
