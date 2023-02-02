@@ -68,11 +68,12 @@ def test_single_frame_regression(tmpdir, u, selection):
         ref_resnums, ref_pkas = pka_from_file(PSF_FRAME_ZERO_PKA)
 
         # test residue numbers
-        resnums = pkatraj.pkas.columns.to_numpy()
+        resnums = pkatraj.results.pkas.columns.to_numpy()
         assert_equal(resnums, ref_resnums)
 
         # test pka values
-        assert_almost_equal(pkatraj.pkas.values[0], ref_pkas, decimal=2)
+        assert_almost_equal(pkatraj.results.pkas.values[0], ref_pkas,
+                            decimal=2)
 
 
 def test_multi_frame_regression(tmpdir, u, glu_ref):
@@ -88,14 +89,14 @@ def test_multi_frame_regression(tmpdir, u, glu_ref):
         ref_resnums, ref_pkas = pka_from_file(PSF_FRAME_NINETY_PKA)
 
         # test residue numbers
-        resnums = pkatraj.pkas.columns.to_numpy()
+        resnums = pkatraj.results.pkas.columns.to_numpy()
         assert_equal(resnums, ref_resnums)
 
         # test final frame pka values
-        assert_almost_equal(pkatraj.pkas.values[-1], ref_pkas, decimal=2)
+        assert_almost_equal(pkatraj.results.pkas.values[-1], ref_pkas, decimal=2)
 
         # test one data series: glu 162
-        assert_almost_equal(pkatraj.pkas[162].values, glu_ref, decimal=2)
+        assert_almost_equal(pkatraj.results.pkas[162].values, glu_ref, decimal=2)
 
 
 @pytest.mark.parametrize('start, stop, step', [
@@ -107,7 +108,7 @@ def test_start_stop_step(tmpdir, u, start, stop, step):
     with tmpdir.as_cwd():
         propka = propkatraj.PropkaTraj(u)
         propka.run(start=start, stop=stop, step=step)
-        pkas = propka.pkas
+        pkas = propka.results.pkas
 
         start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
 
@@ -129,7 +130,7 @@ def test_mmtf_nofilename(tmpdir):
     u = mda.fetch_mmtf('4LYI')
 
     with tmpdir.as_cwd():
-        _ = propkatraj.PropkaTraj(u).run().pkas
+        _ = propkatraj.PropkaTraj(u).run().results.pkas
         assert os.path.isfile('current.pka')
 
 

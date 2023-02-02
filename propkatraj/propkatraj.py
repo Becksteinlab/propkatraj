@@ -169,9 +169,10 @@ class PropkaTraj(AnalysisBase):
 
     def _prepare(self):
         self._pkas = []
-        self.num_failed_frames = 0
-        self.failed_frames_log = []
-        self.failed_times = []
+        self.results.pkas = []
+        self.results.num_failed_frames = 0
+        self.results.failed_frames_log = []
+        self.results.failed_times = []
         self._columns = None
 
     def _single_frame(self):
@@ -189,9 +190,9 @@ class PropkaTraj(AnalysisBase):
                 raise RuntimeError(errmsg) from err
             else:
                 warnings.warn(errmsg)
-                self.num_failed_frames += 1
-                self.failed_frames_log.append(self._ts.frame)
-                self.failed_times.append(self._ts.time)
+                self.results.num_failed_frames += 1
+                self.results.failed_frames_log.append(self._ts.frame)
+                self.results.failed_times.append(self._ts.time)
         else:
             confname = mol.conformation_names[0]
             conformation = mol.conformations[confname]
@@ -207,21 +208,22 @@ class PropkaTraj(AnalysisBase):
 
     def _conclude(self):
         # Ouput failed frames
-        if self.num_failed_frames > 0:
-            perc_failure = (self.num_failed_frames / self.n_frames) * 100
+        if self.results.num_failed_frames > 0:
+            perc_failure = (self.results.num_failed_frames / self.n_frames) \
+                           * 100
 
             # if frames have failed we need to ammend times accordingly
             failed_indices = [np.where(self.times == i) for i in
-                              self.failed_times]
+                              self.results.failed_times]
             self.times = np.delete(self.times, failed_indices)
 
             wmsg = ("number of failed frames = {0}\n"
                     "percentage failure = {1}\n"
-                    "failed frames: {2}".format(self.num_failed_frames,
+                    "failed frames: {2}".format(self.results.num_failed_frames,
                                                 perc_failure,
-                                                self.failed_frames_log))
+                                                self.results.failed_frames_log))
             logging.warning(wmsg)
 
-        self.pkas = pd.DataFrame(self._pkas, index=pd.Index(self.times,
-                                 name='time', dtype='float64'),
-                                 columns=self._columns)
+        self.results.pkas = pd.DataFrame(self._pkas, index=pd.Index(self.times,
+                                         name='time', dtype='float64'),
+                                         columns=self._columns)
