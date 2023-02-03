@@ -39,8 +39,21 @@ class PropkaTraj(AnalysisBase):
     skip_failure : bool
         If set to ``True``, skip frames where :program:`propka` fails. A list
         of failed frames is made available in
-        :attr:`PropkaTraj.failed_frames_log`. If ``False`` raise a
-        RuntimeError exception on those frames. [`False`]
+        :attr:`PropkaTraj.results.failed_frames`. If ``False`` raise a
+        :exc:`RuntimeError` exception on those frames. [`False`]
+        
+    Attributes
+    ----------
+    times : np.ndarray
+        times of the successfully analyzed trajectory frames
+    results.pkas : pd.DataFrame
+        computed pKa's for each residue as a column and each frame as a row;
+        the column names are the residue numbers
+    results.num_failed_frames : int
+        If PROPKA failed for any frames, contains number of failed frames.
+        (Needs `skip_failure` to be ``True``.)
+    results.failed_frames : list
+        Frame indices of failed frames, if `skip_failure` set to ``True``
 
 
     Notes
@@ -89,19 +102,19 @@ class PropkaTraj(AnalysisBase):
 
     By default :class:`PropkaTraj` will select all protein residues (based on
     standard protein residue naming) in the input ``atomgroup``, however this
-    can be changed by passing the ``select`` keyword. For example to limit the
+    can be changed by passing the `select` keyword. For example to limit the
     input residues to residues numbered 1 through to 10::
 
       pkatraj = PropkaTraj(u, select="resnum 1-10")
 
-    Alternatively, you can create an atomgroup beforehand and pass `None` to
-    ``select``::
+    Alternatively, you can create an atomgroup beforehand and pass ``None`` to
+    `select`::
 
       ag = u.select_atoms('resnum 1-10")
       pkatraj = PropkaTraj(ag, select=None)
 
     Once the :class:`PropkaTraj` object has been created, we then use the
-    :meth:`run` to analyse the trajectory::
+    :meth:`run` method to analyse the trajectory::
 
       pkatraj.run()
 
@@ -116,21 +129,21 @@ class PropkaTraj(AnalysisBase):
 
       pkatraj.run(start=0, stop=10, step=2)
 
-    You can also set the ``verbose`` keyword in order to have a nice progress
+    You can also set the `verbose` keyword in order to have a nice progress
     bar of the analysis progress::
 
       pkatraj.run(verbose=True)
 
     Once completed, the resulting timeseries of predicted pKas
     per residue is made available as a :class:`pandas.DataFrame`
-    under :attr`PropkaTraj`.results.pkas. For example if one wanted to get a
+    under :attr`PropkaTraj.results.pkas`. For example if one wanted to get a
     summary of the statistics of the timeseries::
 
       pkatraj.results.pkas.describe()
 
     If one wanted to plot per residue boxplots of the timeseries data and save
-    it as a file `pKa-plot.png` (note: this requires the ``matplotlib`` and
-    ``seaborn`` packages which are not installed by default with
+    it as a file `pKa-plot.png` (note: this requires the :mod:`matplotlib`` and
+    :mod:`seaborn` packages which are not installed by default with
     ``propkatraj``)::
 
       import matplotlib.pyplot as plt
