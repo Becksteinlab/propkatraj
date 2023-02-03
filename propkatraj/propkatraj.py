@@ -27,10 +27,10 @@ class PropkaTraj(AnalysisBase):
 
     Parameters
     ----------
-    atomgroup : :class:`MDAnalysis.Universe` or :class:`MDAnalysis.AtomGroup`
+    atomgroup : :class:`MDAnalysis.core.universe.Universe` or :class:`MDAnalysis.core.groups.AtomGroup`
         Group of atoms containing the residues for pKa analysis. Please note
-        that :class:`MDAnalysis.UpdatingAtomGroup` are not supported and will
-        be automatically converted to :class:`MDAnalysis.AtomGroup`.
+        that :class:`MDAnalysis.core.groups.UpdatingAtomGroup` are *not* supported and will
+        be automatically converted to :class:`MDAnalysis.core.groups.AtomGroup`.
     select : str
         Selection string to use for selecting a subsection of atoms to use
         from the input ``atomgroup``. Note: passing non-protein residues to
