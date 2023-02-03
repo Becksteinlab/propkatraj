@@ -138,7 +138,7 @@ class PropkaTraj(AnalysisBase):
 
     Once completed, the resulting timeseries of predicted pKas
     per residue is made available as a :class:`pandas.DataFrame`
-    under :attr`PropkaTraj.results.pkas`. For example if one wanted to get a
+    under :attr:`PropkaTraj.results.pkas`. For example if one wanted to get a
     summary of the statistics of the timeseries::
 
       pkatraj.results.pkas.describe()
