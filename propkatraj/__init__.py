@@ -1,4 +1,4 @@
-from .propkatraj import get_propka, PropkaTraj
+from .propkatraj import PropkaTraj
 
 from ._version import get_versions
 __version__ = get_versions()['version']
