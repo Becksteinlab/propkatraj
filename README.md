@@ -97,18 +97,16 @@ pkatraj.run()
 
 ```
 
-Calling the `run()` method creates a
-[pandas.DataFrame](http://pandas.pydata.org/pandas-docs/stable/dsintro.html#dataframe)
-attribute named `pkas` which contains the time as the first column and the
-residue numbers as subsequent columns. For each time step, the predicted pKa
-value for this residue is stored. Process the `DataFrame` to obtain statistics
-as shown in the [Documentation](#Documentation).
-
-For example, you can get a summary of the statistics of the timeseries in the
-following manner:
+Calling the `run()` method creates a [pandas.DataFrame](http://pandas.pydata.org/pandas-docs/stable/dsintro.html#dataframe),
+accessed through `results.pkas`, which contains the time as the first column
+and the residue numbers as subsequent columns. For each time step, the
+predicted pKa value for this residue is stored. Process the `DataFrame` to
+obtain statistics as shown in the [Documentation](#Documentation). For example,
+you can get a summary of the statistics of the timeseries in the following
+manner:
 
 ```python
-pkatraj.pkas.describe()
+pkatraj.results.pkas.describe()
 ```
 
 ## Documentation

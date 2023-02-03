@@ -121,12 +121,12 @@ class PropkaTraj(AnalysisBase):
 
       pkatraj.run(verbose=True)
 
-    Once completed, the resulting timeseries of predicted pKas per residue is
-    made available as a :class:`pandas.DataFrame` under :attr`PropkaTraj`.pkas.
-    For example if one wanted to get a summary of the statistics of the
-    timeseries::
+    Once completed, the resulting timeseries of predicted pKas
+    per residue is made available as a :class:`pandas.DataFrame`
+    under :attr`PropkaTraj`.results.pkas. For example if one wanted to get a
+    summary of the statistics of the timeseries::
 
-      pkatraj.pkas.describe()
+      pkatraj.results.pkas.describe()
 
     If one wanted to plot per residue boxplots of the timeseries data and save
     it as a file `pKa-plot.png` (note: this requires the ``matplotlib`` and
@@ -138,7 +138,7 @@ class PropkaTraj(AnalysisBase):
 
       fig = plt.figure(figsize=(28, 8))
       ax = fig.add_subplot(1, 1, 1)
-      sns.boxplot(data=pkatraj.pkas, ax=ax)
+      sns.boxplot(data=pkatraj.results.pkas, ax=ax)
       ax.set_xlabel('residue number')
       ax.set_ylabel(r'p$K_a$')
       fig.savefig('pKa-plot.png')
