@@ -39,7 +39,7 @@ class PropkaTraj(AnalysisBase):
     skip_failure : bool
         If set to ``True``, skip frames where :program:`propka` fails. A list
         of failed frames is made available in
-        :attr:`PropkaTraj.results.failed_frames`. If ``False`` raise a
+        :attr:`PropkaTraj.results.failed_frames_log`. If ``False`` raise a
         :exc:`RuntimeError` exception on those frames. [`False`]
         
     Attributes
@@ -52,8 +52,10 @@ class PropkaTraj(AnalysisBase):
     results.num_failed_frames : int
         If PROPKA failed for any frames, contains number of failed frames.
         (Needs `skip_failure` to be ``True``.)
-    results.failed_frames : list
+    results.failed_frames_log : list
         Frame indices of failed frames, if `skip_failure` set to ``True``
+    results.failed_times : list
+        Times of failed frames.
 
 
     Notes
