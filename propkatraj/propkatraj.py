@@ -224,8 +224,7 @@ class PropkaTraj(AnalysisBase):
     def _conclude(self):
         # Ouput failed frames
         if self.results.num_failed_frames > 0:
-            perc_failure = (self.results.num_failed_frames / self.n_frames) \
-                           * 100
+            perc_failure = (self.results.num_failed_frames / self.n_frames) * 100
 
             # if frames have failed we need to ammend times accordingly
             failed_indices = [np.where(self.times == i) for i in
