@@ -1,4 +1,4 @@
-name: propkatraj-docs
+name: propkatrajdocs
 channels:
   - default
 dependencies:
