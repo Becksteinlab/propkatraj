@@ -1,0 +1,8 @@
+name: propkatraj-docs
+channels:
+  - default
+dependencies:
+  - python
+  - pip
+  - sphinx
+  - sphinx_rtd_theme
