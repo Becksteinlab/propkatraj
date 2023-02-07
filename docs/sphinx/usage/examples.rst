@@ -1,7 +1,7 @@
 Example usage
 =============
 
-The following example requires that the ``MDAnalysisTest`` datafiles and ``seaborn`` packages are installed.
+The following example requires that the ``MDAnalysisTests`` datafiles and ``seaborn`` packages are installed.
 Both of these can be installed through pip:
 
 .. code:: bash
