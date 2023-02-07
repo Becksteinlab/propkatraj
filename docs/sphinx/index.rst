@@ -12,6 +12,7 @@ Welcome to propkatraj's documentation!
 
    usage/installation
    usage/examples
+   api
    
 Indices and tables
 ==================
