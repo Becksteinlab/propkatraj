@@ -1,0 +1,46 @@
+name: docs deployment
+on:
+  push:
+    branches:
+      - docs
+
+concurrency:
+  group: "${{ github.ref }}-${{ github.head_ref }}"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  docs:
+    if: "github.repository == 'Becksteinlab/propkatraj'"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0         
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.8
+        environment-file: docs/requirements.yaml
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: conda-forge
+        miniforge-variant: Mambaforge
+        use-mamba: true
+
+    - name: build docs
+      run: |
+        python setup.py build_sphinx
+
+    - name: deploy docs
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build/sphinx/html
+        user_name: 'github-actions'
+        user_email: 'github-action@users.noreply.github.com'
