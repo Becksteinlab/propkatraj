@@ -3,20 +3,30 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to propkatraj's documentation!
-======================================
+propkatraj: ensamble pKa estimates
+==================================
+
+:Release: |release|
+:Date: |today|
+:Citation: |zenodo|
+
+The :mod:`propkatraj` module contains an analysis class :class:`PropkaTraj`
+which uses an ensemble approach for computing pKa estimates. It uses the single-structure
+pKa estimator `propka`_ v3.1.0 across frames of a trajectory using the `MDAnalysis`_
+package. `propkatraj`_ is hosted on GitHub and is released under the GPLv3 license.
+
+.. _propka: https://github.com/jensengroup/propka
+.. _MDAnalysis: https://www.mdanalysis.org/
+.. _propkatraj: https://github.com/Becksteinlab/propkatraj
+
+.. |zenodo| image:: https://zenodo.org/badge/88095629.svg
+   :alt: Zenodo DOI
+   :target: https://zenodo.org/badge/latestdoi/88095629
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 4
+   :hidden:
 
    usage/installation
    usage/examples
    api
-   
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
