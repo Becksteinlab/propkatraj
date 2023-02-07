@@ -33,6 +33,10 @@ jobs:
         miniforge-variant: Mambaforge
         use-mamba: true
 
+    - name: install dependencies
+      run: |
+        pip install pandas MDAnalysis propka==3.1
+
     - name: build docs
       run: |
         python setup.py build_sphinx
