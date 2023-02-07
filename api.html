@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -23,10 +23,8 @@
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -86,7 +84,10 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="usage/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/examples.html">Example usage</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#propkatraj.PropkaTraj"><code class="docutils literal notranslate"><span class="pre">PropkaTraj</span></code></a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -161,6 +162,8 @@
 AtomGroup on each frame in the trajectory. Run the analysis with
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">PropkaTraj.run()</span></code>, and pKa values will be stored in a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> named <code class="xref py py-attr docutils literal notranslate"><span class="pre">PropkaTraj.pkas</span></code>.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
 <dl>
 <dt>atomgroup<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></span></dt><dd><p>Group of atoms containing the residues for pKa analysis. Please note
 that <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.UpdatingAtomGroup</span></code> are <em>not</em> supported and will
@@ -177,6 +180,9 @@ of failed frames is made available in
 <code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code> exception on those frames. [<cite>False</cite>]</p>
 </dd>
 </dl>
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt>times<span class="classifier">np.ndarray</span></dt><dd><p>times of the successfully analyzed trajectory frames</p>
 </dd>
@@ -191,6 +197,9 @@ the column names are the residue numbers</p>
 <dt>results.failed_times<span class="classifier">list</span></dt><dd><p>Times of failed frames.</p>
 </dd>
 </dl>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h2>
 <p>Currently only the default behaviour supplemented with the <cite>–quiet</cite> flag
 of <strong class="program">propka</strong> is used.</p>
 <p>Temporary <strong class="program">propka</strong> files are written in the current working
@@ -206,6 +215,7 @@ which will likely expect <cite>HETATM</cite> inputs. We recommend users to only
 pass protein atoms for now. See the following issue for more details:
 <a class="reference external" href="https://github.com/Becksteinlab/propkatraj/issues/24">https://github.com/Becksteinlab/propkatraj/issues/24</a></p></li>
 </ol>
+</section>
 </dd></dl>
 
 </section>

@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -23,10 +23,8 @@
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -165,16 +163,16 @@
 <h2>Using <code class="docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#using-pip" title="Permalink to this heading">¶</a></h2>
 <p>The latest release version of propkatraj can be installed using <em>pip</em> and
 requires a Python version of 3.8 or later.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install propkatraj
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>propkatraj
 </pre></div>
 </div>
 </section>
 <section id="from-source">
 <h2>From source<a class="headerlink" href="#from-source" title="Permalink to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">propkatraj</span></code> can also be installed from source:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/Becksteinlab/propkatraj.git
-<span class="nb">cd</span> propkatraj
-pip install .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Becksteinlab/propkatraj.git
+<span class="nb">cd</span><span class="w"> </span>propkatraj
+pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
 <p>If installing this way, it is recommended to run the included tests.</p>
@@ -183,15 +181,15 @@ pip install .
 <p>After installing the base package, running tests require the additional
 installation of the <code class="docutils literal notranslate"><span class="pre">MDAnalysisTests</span></code> and <code class="docutils literal notranslate"><span class="pre">pytest</span></code> packages. These can be
 installed with either <code class="docutils literal notranslate"><span class="pre">pip</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// with pip
-pip install MDAnalysisTests pytest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>//<span class="w"> </span>with<span class="w"> </span>pip
+pip<span class="w"> </span>install<span class="w"> </span>MDAnalysisTests<span class="w"> </span>pytest
 
-// with conda
-conda install MDAnalysisTests pytest
+//<span class="w"> </span>with<span class="w"> </span>conda
+conda<span class="w"> </span>install<span class="w"> </span>MDAnalysisTests<span class="w"> </span>pytest
 </pre></div>
 </div>
 <p>To run the tests, in the source root:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest -v propkatraj/tests
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-v<span class="w"> </span>propkatraj/tests
 </pre></div>
 </div>
 </section>
