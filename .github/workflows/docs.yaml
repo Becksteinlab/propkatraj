@@ -37,6 +37,10 @@ jobs:
       run: |
         pip install pandas MDAnalysis propka==3.1
 
+    - name: report packages
+      run: |
+        conda list
+
     - name: build docs
       run: |
         python setup.py build_sphinx
