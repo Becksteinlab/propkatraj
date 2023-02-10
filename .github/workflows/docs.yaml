@@ -2,7 +2,7 @@ name: docs deployment
 on:
   push:
     branches:
-      - docs
+      - master
 
 concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}"
