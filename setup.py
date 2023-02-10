@@ -29,7 +29,7 @@ setup(name='propkatraj',
                    'Programming Language :: Python :: 3.11',
                    ],
       project_urls={
-          'Documentation': 'https://github.com/Becksteinlab/propkatraj/blob/master/README.md',
+          'Documentation': 'https://github.com/Becksteinlab/propkatraj/blob/main/README.md',
           'Source': 'https://github.com/Becksteinlab/propkatraj',
           'Issue Tracker': 'https://github.com/Becksteinlab/propkatraj/issues',
           },
