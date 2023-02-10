@@ -8,6 +8,7 @@ dependencies:
   - pandas
   - pytest
   - pytest-cov
+  - pytest-xdist
   - codecov
   - pip
   - pip:

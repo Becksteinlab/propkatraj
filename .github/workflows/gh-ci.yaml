@@ -79,6 +79,7 @@ jobs:
       run: |
         python --version
         python -m pip install .  --no-deps 
+
     - name: Python information
       run: |
         which python
@@ -86,9 +87,17 @@ jobs:
         pip list
         conda info
         conda list
+
     - name: Run tests
       run: |
-        pytest -v --color=yes propkatraj/tests/
+        pytest -n 2 --cov=propkatraj --cov-report=xml -v --color=yes propkatraj/tests/
+
+    - name: codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage.xml
+        fail_ci_if_error: True
+        verbose: True
 
   pylint_check:
     if: "github.repository == 'Becksteinlab/propkatraj'"
