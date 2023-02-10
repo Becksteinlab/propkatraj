@@ -1,7 +1,7 @@
 # README: propkatraj
 [![DOI](https://zenodo.org/badge/88095629.svg)](https://zenodo.org/badge/latestdoi/88095629)
-[![GH Actions CI](https://github.com/Becksteinlab/propkatraj/actions/workflows/gh-ci.yaml/badge.svg?branch=master)](https://github.com/Becksteinlab/propkatraj/actions/workflows/gh-ci.yaml)
-[![codecov](https://codecov.io/gh/Becksteinlab/propkatraj/branch/master/graph/badge.svg)](https://codecov.io/gh/Becksteinlab/propkatraj/branch/master)
+[![GH Actions CI](https://github.com/Becksteinlab/propkatraj/actions/workflows/gh-ci.yaml/badge.svg?branch=main)](https://github.com/Becksteinlab/propkatraj/actions/workflows/gh-ci.yaml)
+[![codecov](https://codecov.io/gh/Becksteinlab/propkatraj/branch/master/graph/badge.svg)](https://codecov.io/gh/Becksteinlab/propkatraj/branch/main)
 
 `propkatraj.py` can be used to computationally estimate pKa values for
 protein residues. We use an ensemble approach where many different
