@@ -3,12 +3,12 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - MDAnalysis<2.0.0
-  - MDAnalysisTests<2.0.0
-  - six
+  - MDAnalysis>=2.0.0
+  - MDAnalysisTests>=2.0.0
   - pandas
   - pytest
   - pytest-cov
+  - pytest-xdist
   - codecov
   - pip
   - pip:
