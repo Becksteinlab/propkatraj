@@ -13,7 +13,8 @@ propkatraj: ensamble pKa estimates
 The :mod:`propkatraj` module contains an analysis class :class:`PropkaTraj`
 which uses an ensemble approach for computing pKa estimates. It uses the single-structure
 pKa estimator `propka`_ v3.1.0 across frames of a trajectory using the `MDAnalysis`_
-package. `propkatraj`_ is hosted on GitHub and is released under the GPLv3 license.
+package. `propkatraj`_ is hosted on GitHub and is released under the GPLv2
+license or later version.
 
 .. _propka: https://github.com/jensengroup/propka
 .. _MDAnalysis: https://www.mdanalysis.org/
