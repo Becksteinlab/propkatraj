@@ -6,3 +6,4 @@ dependencies:
   - pip
   - sphinx
   - sphinx_rtd_theme
+  - sphinx-sitemap
