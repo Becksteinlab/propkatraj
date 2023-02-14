@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propkatraj.propkatraj &mdash; propkatraj 1.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> propkatraj
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/examples.html">Example usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">propkatraj</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propkatraj.propkatraj</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propkatraj.propkatraj</h1><div class="highlight"><pre>
+<span></span><span class="c1"># propkatrj --- https://github.com/Becksteinlab/propkatraj</span>
+<span class="c1"># Copyright (c) 2013-2020 David Dotson, Irfan Alibay, Ricky Sexton,</span>
+<span class="c1">#                         Armin Zjajo, Shujie Fan, Oliver Beckstein</span>
+<span class="c1"># Released under the GNU General Public License v2+</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">propka.run</span> <span class="k">as</span> <span class="nn">pk</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<div class="viewcode-block" id="PropkaTraj"><a class="viewcode-back" href="../../api.html#propkatraj.PropkaTraj">[docs]</a><span class="k">class</span> <span class="nc">PropkaTraj</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Per residue pKa analysis of a trajectory.</span>
+
+<span class="sd">    Runs :program:`propka` on the titrateable residues of the selected</span>
+<span class="sd">    AtomGroup on each frame in the trajectory. Run the analysis with</span>
+<span class="sd">    :meth:`PropkaTraj.run`, and pKa values will be stored in a</span>
+<span class="sd">    :class:`pandas.DataFrame` named :attr:`PropkaTraj.pkas`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomgroup : :class:`MDAnalysis.core.universe.Universe` or :class:`MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">        Group of atoms containing the residues for pKa analysis. Please note</span>
+<span class="sd">        that :class:`MDAnalysis.core.groups.UpdatingAtomGroup` are *not* supported and will</span>
+<span class="sd">        be automatically converted to :class:`MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    select : str</span>
+<span class="sd">        Selection string to use for selecting a subsection of atoms to use</span>
+<span class="sd">        from the input ``atomgroup``. Note: passing non-protein residues to</span>
+<span class="sd">        :program:`propka` may lead to incorrect results (see notes).</span>
+<span class="sd">        [`protein`]</span>
+<span class="sd">    skip_failure : bool</span>
+<span class="sd">        If set to ``True``, skip frames where :program:`propka` fails. A list</span>
+<span class="sd">        of failed frames is made available in</span>
+<span class="sd">        :attr:`PropkaTraj.results.failed_frames_log`. If ``False`` raise a</span>
+<span class="sd">        :exc:`RuntimeError` exception on those frames. [`False`]</span>
+<span class="sd">        </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times : np.ndarray</span>
+<span class="sd">        times of the successfully analyzed trajectory frames</span>
+<span class="sd">    results.pkas : pd.DataFrame</span>
+<span class="sd">        computed pKa&#39;s for each residue as a column and each frame as a row;</span>
+<span class="sd">        the column names are the residue numbers</span>
+<span class="sd">    results.num_failed_frames : int</span>
+<span class="sd">        If PROPKA failed for any frames, contains number of failed frames.</span>
+<span class="sd">        (Needs `skip_failure` to be ``True``.)</span>
+<span class="sd">    results.failed_frames_log : list</span>
+<span class="sd">        Frame indices of failed frames, if `skip_failure` set to ``True``</span>
+<span class="sd">    results.failed_times : list</span>
+<span class="sd">        Times of failed frames.</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Currently only the default behaviour supplemented with the `--quiet` flag</span>
+<span class="sd">    of :program:`propka` is used.</span>
+
+<span class="sd">    Temporary :program:`propka` files are written in the current working</span>
+<span class="sd">    directory. This will leave a ``current.pka`` and ``current.propka_input``</span>
+<span class="sd">    file. These are the temporary files for the final frame and can be removed</span>
+<span class="sd">    safely.</span>
+
+<span class="sd">    Current known issues:</span>
+
+<span class="sd">    1. Due to the current behaviour of the MDAnalysis PDBWriter, non-protein</span>
+<span class="sd">       atoms are written to PDBs using `ATOM` records instead of `HETATM`.</span>
+<span class="sd">       This is likely to lead to undefined behaviour in :program:`propka`,</span>
+<span class="sd">       which will likely expect `HETATM` inputs. We recommend users to only</span>
+<span class="sd">       pass protein atoms for now. See the following issue for more details:</span>
+<span class="sd">       https://github.com/Becksteinlab/propkatraj/issues/24</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span> <span class="n">skip_failure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">atoms</span>
+
+        <span class="c1"># Issue #23 (keep until the PDBWriter is fixed)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;not protein&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Non protein atoms passed to propka 3.1.</span><span class="se">\n</span><span class="s2"> MDAnalysis&#39; &quot;</span>
+                    <span class="s2">&quot;PDBWriter does not currently write non-standard residues &quot;</span>
+                    <span class="s2">&quot;correctly as HETATM records and this may lead to &quot;</span>
+                    <span class="s2">&quot;incorrect pKa predictions.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;See https://github.com/Becksteinlab/propkatraj/issues/24 &quot;</span>
+                    <span class="s2">&quot; for more details&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmpfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span> <span class="s1">&#39;current.pdb&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_failure</span> <span class="o">=</span> <span class="n">skip_failure</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pkas</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pkas</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">num_failed_frames</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">failed_frames_log</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">failed_times</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pstream</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">NamedStream</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmpfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pstream</span><span class="p">)</span>
+        <span class="c1"># reset stream for reading</span>
+        <span class="n">pstream</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># TODO: it would be nice to allow for other options, maybe for 3.2?</span>
+            <span class="n">mol</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">single</span><span class="p">(</span><span class="n">pstream</span><span class="p">,</span> <span class="n">optargs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;--quiet&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;failure on frame: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_failure</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">num_failed_frames</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">failed_frames_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">failed_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">confname</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">conformation</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">confname</span><span class="p">]</span>
+            <span class="n">groups</span> <span class="o">=</span> <span class="n">conformation</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">()</span>
+
+            <span class="c1"># extract pka estimates from each residue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pkas</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">g</span><span class="o">.</span><span class="n">pka_value</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">resNumb</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># deallocate stream</span>
+            <span class="n">pstream</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Ouput failed frames</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">num_failed_frames</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">perc_failure</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">num_failed_frames</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+
+            <span class="c1"># if frames have failed we need to ammend times accordingly</span>
+            <span class="n">failed_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">failed_times</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">,</span> <span class="n">failed_indices</span><span class="p">)</span>
+
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;number of failed frames = </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;percentage failure = </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;failed frames: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">num_failed_frames</span><span class="p">,</span>
+                                                <span class="n">perc_failure</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">failed_frames_log</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pkas</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pkas</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">,</span>
+                                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span>
+                                         <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2023, David Dotson, Oliver Beckstein, Armin Zjajo, Rick Sexton, Shujie Fan, Irfan Alibay, Ian Kenney
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
