@@ -7,7 +7,7 @@ For a basic installation just type the command::
 
 """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import versioneer
 
 setup(name='propkatraj',
@@ -33,7 +33,7 @@ setup(name='propkatraj',
           'Source': 'https://github.com/Becksteinlab/propkatraj',
           'Issue Tracker': 'https://github.com/Becksteinlab/propkatraj/issues',
           },
-      packages=['propkatraj'],
+      packages=find_packages(),
       scripts=[],
       license='GPLv2+',
       long_description=open('README.md').read(),
