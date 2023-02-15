@@ -1,6 +1,6 @@
 include versioneer.py
 include propkatraj/_version.py
-include propkatraj/tests/datafiles/*pdb
-include propkatraj/tests/datafiles/*pka
-include propkatraj/tests/datafiles/*xtc
-include propaktraj/tests/datafiles/*gro
+include propkatraj/tests/data/*pdb
+include propkatraj/tests/data/*pka
+include propkatraj/tests/data/*xtc
+include propaktraj/tests/data/*gro
