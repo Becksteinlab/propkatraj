@@ -15,15 +15,15 @@ __all__ = [
 from pkg_resources import resource_filename
 
 PSF_FRAME_ZERO_PKA = resource_filename(__name__,
-                                       './datafiles/psf_ref_frame0.pka')
+                                       './data/psf_ref_frame0.pka')
 PSF_FRAME_NINETY_PKA = resource_filename(__name__,
-                                         './datafiles/psf_ref_frame90.pka')
+                                         './data/psf_ref_frame90.pka')
 # Issue #10
 INDEXERR_FRAME14_GRO = resource_filename(__name__,
-                                         './datafiles/indexerr_frame14.gro')
+                                         './data/indexerr_frame14.gro')
 INDEXERR_FRAME14_XTC = resource_filename(__name__,
-                                         './datafiles/indexerr_frame14.xtc')
+                                         './data/indexerr_frame14.xtc')
 ATTERR_FRAME1_PDB = resource_filename(__name__,
-                                      './datafiles/atterr_frame1.pdb')
+                                      './data/atterr_frame1.pdb')
 ATTERR_FRAME1_XTC = resource_filename(__name__,
-                                      './datafiles/atterr_frame1.xtc')
+                                      './data/atterr_frame1.xtc')
