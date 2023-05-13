@@ -93,6 +93,8 @@ jobs:
         pytest -n 2 --cov=propkatraj --cov-report=xml -v --color=yes propkatraj/tests/
 
     - name: codecov
+      if: ${{ github.repository == 'Becksteinlab/propkatraj'
+              && github.event_name != 'schedule' }}
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
