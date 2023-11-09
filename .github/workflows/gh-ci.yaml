@@ -44,35 +44,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
     - name: Build information
       run: |
         uname -a
         df -h
         ulimit -a
 
-    - name: Install conda dependencies
-      uses: conda-incubator/setup-miniconda@v2
+    - name: "Setup Micromamba"
+      uses: mamba-org/setup-micromamba@v1
       with:
-        python-version: ${{ matrix.python-version }}
         environment-file: devtools/environment.yml
-        add-pip-as-python-dependency: true
-        architecture: x64
-
-        miniforge-variant: Mambaforge
-        use-mamba: true
-        channels: conda-forge, defaults
-
-        activate-environment: propkatraj-test
-        auto-update-conda: true
-        auto-activate-base: false
-        show-channel-urls: true
+        environment-name: propkatraj-test
+        cache-environment: true
+        cache-downloads: true
+        create-args:
+          python=${{ matrix.python-version }}
 
     - name: Install MDAnalysis version
       uses: MDAnalysis/install-mdanalysis@main
       with:
         version: ${{ matrix.mdanalysis-version }}
         install-tests: true
-        installer:  mamba
+        installer:  micromamba
         shell: bash -l {0} 
       
     - name: Install package
@@ -87,6 +83,10 @@ jobs:
         pip list
         conda info
         conda list
+
+    - name: Test imports
+      run: |
+        python -C "import propkatraj; print(propkatraj.__version__)"
 
     - name: Run tests
       run: |
