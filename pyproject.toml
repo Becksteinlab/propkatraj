@@ -59,6 +59,14 @@ test = [
 "MDAKit registry" = "https://mdakits.mdanalysis.org/propkatraj.html"
 "source" = "https://github.com/Becksteinlab/propkatraj"
 
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages]
+find = {namespaces = false, exclude=["devtools"]}
+
 [tool.versioningit]
 default-version = "1+unknown"
 
@@ -67,6 +75,9 @@ method = "git"
 # the below line expects tags to look like '1.0.2'.
 # if prefixing with a v, e.g. 'v1.0.2', change it to ["v*"]
 match = ["release-*"]
+
+[tool.versioningit.tag2version]
+rmprefix = "release-"
 
 [tool.versioningit.format]
 distance = "{base_version}+{distance}.{vcs}{rev}"
