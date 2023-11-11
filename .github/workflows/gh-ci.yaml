@@ -86,7 +86,7 @@ jobs:
 
     - name: Test imports
       run: |
-        python -C "import propkatraj; print(propkatraj.__version__)"
+        python -Ic "import propkatraj; print(propkatraj.__version__)"
 
     - name: Run tests
       run: |
