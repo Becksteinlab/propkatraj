@@ -81,8 +81,8 @@ jobs:
         which python
         which pip
         pip list
-        conda info
-        conda list
+        micromamba info
+        micormamba list
 
     - name: Test imports
       run: |
