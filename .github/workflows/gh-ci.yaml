@@ -56,6 +56,7 @@ jobs:
     - name: Install conda dependencies
       uses: conda-incubator/setup-miniconda@v2
       with:
+        python-version: ${{ matrix.python-version }}
         environment-file: devtools/environment.yml
         add-pip-as-python-dependency: true
         architecture: x64
