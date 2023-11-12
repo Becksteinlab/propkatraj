@@ -82,7 +82,7 @@ jobs:
         which pip
         pip list
         micromamba info
-        micormamba list
+        micromamba list
 
     - name: Test imports
       run: |
@@ -132,7 +132,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python ${{ needs.environment-config.outputs.stable-python-version }}
       uses: actions/setup-python@v4
@@ -141,10 +141,12 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install setuptools cython numpy twine
+        pip install pipx twine
+
     - name: Build package
       run: |
-        python setup.py sdist
+        python -m pipx run build
+
     - name: Check package build
       run: |
         DISTRIBUTION=$(ls -t1 dist/propkatraj-*.tar.gz | head -n 1)
