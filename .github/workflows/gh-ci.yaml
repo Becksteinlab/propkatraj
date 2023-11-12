@@ -17,7 +17,7 @@ concurrency:
 
 defaults:
   run:
-    shell: bash
+    shell: bash -l {0}
 
 jobs:
   environment-config:
@@ -53,22 +53,26 @@ jobs:
         df -h
         ulimit -a
 
-    - name: "Setup Micromamba"
-      uses: mamba-org/setup-micromamba@v1
+    - name: Install conda dependencies
+      uses: conda-incubator/setup-miniconda@v2
       with:
         environment-file: devtools/environment.yml
-        environment-name: propkatraj-test
-        cache-environment: true
-        cache-downloads: true
-        create-args:
-          python=${{ matrix.python-version }}
+        add-pip-as-python-dependency: true
+        architecture: x64
+        miniforge-variant: Mambaforge
+        use-mamba: true
+        channels: conda-forge, defaults
+        activate-environment: propkatraj-test
+        auto-update-conda: true
+        auto-activate-base: false
+        show-channel-urls: true
 
     - name: Install MDAnalysis version
       uses: MDAnalysis/install-mdanalysis@main
       with:
         version: ${{ matrix.mdanalysis-version }}
         install-tests: true
-        installer:  micromamba
+        installer:  mamba
         shell: bash -l {0} 
       
     - name: Install package
