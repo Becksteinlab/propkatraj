@@ -1,0 +1,85 @@
+[build-system]
+requires = [
+  "setuptools >= 61.2",
+  "versioningit",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "propkatraj"
+description = "Obtain pKas for titreatable residues from a simulation trajectory."
+license = {file = "LICENSE" }
+authors = [
+    {name = "David Dotson", email = "dotsdl@gmail.com"},
+    {name = "Oliver Beckstein", email = "orbeckst@gmail.com"},    
+    {name = "propkatraj AUTHORS"},
+]
+maintainers = [
+    {name = "Oliver Beckstein", email = "orbeckst@gmail.com"},
+    {name = "Irfan Alibay", email = "ialibay@mdanalysis.org"},
+]
+classifiers = [
+    "Development Status :: 6 - Mature",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "MDAnalysis>=2.0.0",
+    "numpy",
+    "pandas",
+    "propka==3.1",
+]
+keywords = [
+    "molecular simulations",
+]
+dynamic = [
+    "version",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "pytest-xdist>=2.5",
+    "pytest-cov>=3.0",
+]
+
+[project.urls]
+"documentation" = "https://github.com/Becksteinlab/propkatraj/blob/main/README.md"
+"Issue tracker" = "https://github.com/Becksteinlab/propkatraj/issues"
+"MDAKit registry" = "https://mdakits.mdanalysis.org/propkatraj.html"
+"source" = "https://github.com/Becksteinlab/propkatraj"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages]
+find = {namespaces = false, exclude=["devtools"]}
+
+[tool.versioningit]
+default-version = "1+unknown"
+
+[tool.versioningit.vcs]
+method = "git"
+# the below line expects tags to look like '1.0.2'.
+# if prefixing with a v, e.g. 'v1.0.2', change it to ["v*"]
+match = ["release-*"]
+
+[tool.versioningit.tag2version]
+rmprefix = "release-"
+
+[tool.versioningit.format]
+distance = "{base_version}+{distance}.{vcs}{rev}"
+dirty = "{base_version}+{distance}.{vcs}{rev}.dirty"
+distance-dirty = "{base_version}+{distance}.{vcs}{rev}.dirty"

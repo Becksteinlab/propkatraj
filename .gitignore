@@ -97,3 +97,6 @@ ENV/
 # propka junk
 current.pka
 current.propka_input
+
+# lock files
+*.lock
