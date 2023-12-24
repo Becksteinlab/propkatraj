@@ -39,12 +39,12 @@ jobs:
 
     - name: build docs
       run: |
-        python setup.py build_sphinx
+        cd docs && sphinx-build -T -E --keep-going -b html -D language=en sphinx html
 
     - name: deploy docs
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build/sphinx/html
+        publish_dir: ./docs/html
         user_name: 'github-actions'
         user_email: 'github-action@users.noreply.github.com'
