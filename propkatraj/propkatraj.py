@@ -132,7 +132,7 @@ class PropkaTraj(AnalysisBase):
             # extract pka estimates from each residue
             self._pkas.append([g.pka_value for g in groups])
             if self._columns is None:
-                self._columns = [g.atom.resNumb for g in groups]
+                self._columns = [g.atom.res_num for g in groups]
         finally:
             # deallocate stream
             pstream.close(force=True)
