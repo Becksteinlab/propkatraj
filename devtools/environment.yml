@@ -12,4 +12,4 @@ dependencies:
   - codecov
   - pip
   - pip:
-    - propka>=3.2
+    - propka==3.2
