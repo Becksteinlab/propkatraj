@@ -37,7 +37,7 @@ dependencies = [
     "MDAnalysis>=2.0.0",
     "numpy",
     "pandas",
-    "propka==3.1",
+    "propka>=3.1",
 ]
 keywords = [
     "molecular simulations",
