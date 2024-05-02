@@ -34,7 +34,7 @@ classifiers = [
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "MDAnalysis>=2.0.0",
+     "MDAnalysis>=2.1.0",
     "numpy",
     "pandas",
     "propka==3.1",
