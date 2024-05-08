@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}"
@@ -52,6 +55,7 @@ jobs:
         cd docs && sphinx-build -T -E --keep-going -b html -D language=en sphinx html
 
     - name: deploy docs
+      if: github.event_name != 'pull_request'    
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
