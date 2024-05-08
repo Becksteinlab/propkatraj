@@ -18,24 +18,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0         
 
     - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         python-version: 3.11
         environment-file: docs/requirements.yaml
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
+        add-pip-as-python-dependency: true
+        architecture: x64
+
         miniforge-variant: Mambaforge
         use-mamba: true
+        channels: conda-forge
+
+        activate-environment: propkatrajdocs
+        auto-update-conda: true
+        auto-activate-base: false
+        show-channel-urls: true 
 
     - name: install dependencies
       run: |
         pip install pandas MDAnalysis propka==3.1
+
+    - name: install propkatraj
+      run: |
+        pip install .
 
     - name: build docs
       run: |
