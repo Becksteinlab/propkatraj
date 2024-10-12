@@ -1,6 +1,6 @@
 name: propkatrajdocs
 channels:
-  - default
+  - conda-forge
 dependencies:
   - python
   - pip

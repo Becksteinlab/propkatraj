@@ -3,11 +3,9 @@ on:
   push:
     branches:
       - main
-      - dev
   pull_request:
     branches:
       - main
-      - dev
   schedule:
     - cron: "0 0 * * 0"
 
@@ -20,18 +18,6 @@ defaults:
     shell: bash -l {0}
 
 jobs:
-  environment-config:
-    runs-on: ubuntu-latest
-    outputs:
-      stable-python-version: ${{ steps.get_python_version.outputs.python-version }}
-    steps:
-      - uses: actions/checkout@v3
-
-      - id: get-python-version
-        uses: MDAnalysis/get-latest-python-version@main
-        with:
-          last-n-minor-release: 1
-
   main-tests:
     if: "github.repository == 'Becksteinlab/propkatraj'"
     runs-on: ${{ matrix.os }}
@@ -39,11 +25,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.10", "3.11", "3.12"]
         mdanalysis-version: ["latest", "develop"]
-
+        # Manually exclude any combinations of the test matrix that can't be run 
+        exclude:
+          # The latest release of MDAnalysis only supports up to Python 3.11
+          # so we exclude 3.12 from the test matrix (issue #69)
+          - python-version: "3.12"
+            mdanalysis-version: "latest"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -54,15 +45,17 @@ jobs:
         ulimit -a
 
     - name: Install conda dependencies
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         python-version: ${{ matrix.python-version }}
         environment-file: devtools/environment.yml
         add-pip-as-python-dependency: true
         architecture: x64
+        
         miniforge-variant: Mambaforge
         use-mamba: true
         channels: conda-forge, defaults
+        
         activate-environment: propkatraj-test
         auto-update-conda: true
         auto-activate-base: false
@@ -95,12 +88,12 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest -n 2 --cov=propkatraj --cov-report=xml -v --color=yes propkatraj/tests/
+        pytest -n auto --cov=propkatraj --cov-report=xml -v --color=yes propkatraj/tests/
 
     - name: codecov
       if: ${{ github.repository == 'Becksteinlab/propkatraj'
               && github.event_name != 'schedule' }}
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: coverage.xml
@@ -109,7 +102,6 @@ jobs:
 
   pylint_check:
     if: "github.repository == 'Becksteinlab/propkatraj'"
-    needs: environment-config
     runs-on: ubuntu-latest
 
     steps:
@@ -118,7 +110,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ needs.environment-config.outputs.stable-python-version }}
+        python-version: "3.11"
 
     - name: Install Pylint
       run: |
@@ -133,16 +125,15 @@ jobs:
 
   pypi_check:
     if: "github.repository == 'Becksteinlab/propkatraj'"
-    needs: environment-config
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Python ${{ needs.environment-config.outputs.stable-python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ needs.environment-config.outputs.stable-python-version }}
+        python-version: "3.11"
 
     - name: Install dependencies
       run: |

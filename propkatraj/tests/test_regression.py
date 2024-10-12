@@ -123,10 +123,12 @@ def test_start_stop_step(tmpdir, u, start, stop, step):
         assert_almost_equal(pkas.index.values, times, decimal=5)
 
 
-def test_mmtf_nofilename(tmpdir):
+def test_nofilename(tmpdir):
     """See issue #23"""
-    # Everyone's favourite BRD4 model
-    u = mda.fetch_mmtf('4LYI')
+    # Load a GRO file and then purposely set the filename to None
+    u = mda.Universe(GRO)
+    u.transfer_to_memory()
+    u.trajectory.filename = None
 
     with tmpdir.as_cwd():
         _ = propkatraj.PropkaTraj(u).run().results.pkas
