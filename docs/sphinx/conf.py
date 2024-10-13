@@ -47,8 +47,8 @@ html_static_path = ['_static']
 # Configuration for intersphinx: refer to the Python standard library
 # and other packages used by MDAnalysis
 intersphinx_mapping = {
-                       'https://docs.python.org/3/': None,
-                       'https://docs.mdanalysis.org/stable/index.html': None,
-                       'https://numpy.org/doc/stable/': None,
-                       'https://pandas.pydata.org/pandas-docs/stable/': None,
+                       'python': ('https://docs.python.org/3/', None),
+                       'mdanalysis': ('https://docs.mdanalysis.org/stable/', None),
+                       'numpy': ('https://numpy.org/doc/stable/', None),
+                       'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
                        }
