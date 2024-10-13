@@ -5,7 +5,7 @@ Using ``pip``
 -------------
 
 The latest release version of propkatraj can be installed using *pip* and
-requires a Python version of 3.8 or later.
+requires a Python version of 3.10 or later.
 
 .. code:: bash
 
@@ -33,10 +33,10 @@ installed with either ``pip`` or ``conda``.
 
 .. code:: bash
 
-    // with pip
+    # with pip
     pip install MDAnalysisTests pytest
 
-    // with conda
+    # with conda
     conda install MDAnalysisTests pytest
 
 To run the tests, in the source root:
