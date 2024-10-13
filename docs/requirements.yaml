@@ -2,8 +2,7 @@ name: propkatrajdocs
 channels:
   - conda-forge
 dependencies:
-  - python
-  - pip
+  - python >=3.10
   - sphinx
   - sphinx_rtd_theme
   - sphinx-sitemap
