@@ -31,6 +31,7 @@ jobs:
           test_submission: true
           package_name: 'propkatraj'
           module_name: 'propkatraj'
+          test_deps: 'pytest MDAnalysisTests'
           tests: true
           
   pypi_push:
@@ -54,4 +55,5 @@ jobs:
         with:        
           package_name: 'propkatraj'
           module_name: 'propkatraj'
+          test_deps: 'pytest MDAnalysisTests'     
           tests: true

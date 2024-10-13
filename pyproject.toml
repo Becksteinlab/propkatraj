@@ -34,7 +34,7 @@ classifiers = [
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-     "MDAnalysis>=2.1.0",
+    "MDAnalysis>=2.1.0",
     "numpy",
     "pandas",
     "propka==3.1",
@@ -51,10 +51,11 @@ test = [
     "pytest>=6.0",
     "pytest-xdist>=2.5",
     "pytest-cov>=3.0",
+    "MDAnalysisTests>=2.1.0",
 ]
 
 [project.urls]
-"documentation" = "https://github.com/Becksteinlab/propkatraj/blob/main/README.md"
+"documentation" = "https://becksteinlab.github.io/propkatraj/"
 "Issue tracker" = "https://github.com/Becksteinlab/propkatraj/issues"
 "MDAKit registry" = "https://mdakits.mdanalysis.org/propkatraj.html"
 "source" = "https://github.com/Becksteinlab/propkatraj"
