@@ -4,6 +4,11 @@ channels:
 dependencies:
   - python >=3.10
   - pip
+  # propkatraj dependencies
+  - MDAnalysis >=2.0.0
+  - pandas
+  - propka==3.1.0  
+  # sphinx on RTD
   - sphinx
   - sphinx_rtd_theme
   - sphinx-sitemap
