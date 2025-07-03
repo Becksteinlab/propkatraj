@@ -33,7 +33,7 @@ jobs:
         add-pip-as-python-dependency: true
         architecture: x64
 
-        miniforge-variant: Mambaforge
+        miniforge-variant: Miniforge3
         use-mamba: true
         channels: conda-forge
 
@@ -56,7 +56,7 @@ jobs:
 
     - name: deploy docs
       if: github.event_name != 'pull_request'    
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/html
