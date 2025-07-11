@@ -52,9 +52,9 @@ jobs:
         add-pip-as-python-dependency: true
         architecture: x64
         
-        miniforge-variant: Miniforge3
+        miniforge-version: latest
         use-mamba: true
-        channels: conda-forge, defaults
+        channels: conda-forge
         
         activate-environment: propkatraj-test
         auto-update-conda: true
