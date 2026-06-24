@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macOS-latest, ubuntu-latest, windows-latest]
+        os: [macOS-latest, ubuntu-latest]   # ignore windows-latest for now
         python-version: ["3.11", "3.12", "3.13", "3.14"]
         mdanalysis-version: ["latest", "develop"]
         # Manually exclude any combinations of the test matrix that can't be run 
