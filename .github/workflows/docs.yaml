@@ -28,7 +28,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v4
       with:
-        python-version: 3.11
+        python-version: 3.14
         environment-file: docs/requirements.yaml
         add-pip-as-python-dependency: true
         architecture: x64
