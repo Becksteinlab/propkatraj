@@ -2,7 +2,8 @@ name: propkatrajdocs
 channels:
   - conda-forge
 dependencies:
-  - python >=3.10
+  - python >=3.11
+  - setuptools>=61.2,<81
   - pip
   # propkatraj dependencies
   - MDAnalysis >=2.0.0
