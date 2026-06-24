@@ -2,6 +2,7 @@ name: propkatraj
 channels:
   - conda-forge
 dependencies:
+  - setuptools>=61.2,<81
   - MDAnalysis>=2.0.0
   - MDAnalysisTests>=2.0.0
   - pandas
