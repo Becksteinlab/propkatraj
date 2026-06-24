@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-  "setuptools >= 61.2",
+  "setuptools >= 61.2,<81",  # pkg_resources are currently required and were removed in 81.0.0
   "versioningit",
 ]
 build-backend = "setuptools.build_meta"
