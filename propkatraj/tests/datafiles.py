@@ -23,3 +23,5 @@ INDEXERR_FRAME14_GRO = str(_DATA.joinpath("indexerr_frame14.gro"))
 INDEXERR_FRAME14_XTC = str(_DATA.joinpath("indexerr_frame14.xtc"))
 ATTERR_FRAME1_PDB = str(_DATA.joinpath("atterr_frame1.pdb"))
 ATTERR_FRAME1_XTC = str(_DATA.joinpath("atterr_frame1.xtc"))
+
+del _DATA
