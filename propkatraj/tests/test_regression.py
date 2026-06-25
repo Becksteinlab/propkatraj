@@ -44,8 +44,7 @@ def glu_ref():
 
 def pka_from_file(filename):
     columns = ['resname', 'resnum', 'chain', 'pka', 'model-pka']
-    df = pd.read_csv(filename, names=columns, skiprows=1,
-                     delim_whitespace=True)
+    df = pd.read_csv(filename, names=columns, skiprows=1, sep=r"\s+")
     df.sort_values(by=['resnum'], inplace=True)
     resnums = df['resnum'].to_numpy()
     pkas = df['pka'].to_numpy()

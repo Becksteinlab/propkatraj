@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-  "setuptools >= 61.2",
+  "setuptools >= 61.2,<81",  # pkg_resources are currently required and were removed in 81.0.0
   "versioningit",
 ]
 build-backend = "setuptools.build_meta"
@@ -25,15 +25,17 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
     "Programming Language :: C",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",    
+    "Programming Language :: Python :: 3.12",   
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
+    "setuptools >= 61.2,<81",  # pkg_resources are currently required and were removed in 81.0.0, see gh-80
     "MDAnalysis>=2.1.0",
     "numpy",
     "pandas",

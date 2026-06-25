@@ -12,18 +12,16 @@ __all__ = [
 
 ]
 
-from pkg_resources import resource_filename
+from importlib.resources import files
 
-PSF_FRAME_ZERO_PKA = resource_filename(__name__,
-                                       './data/psf_ref_frame0.pka')
-PSF_FRAME_NINETY_PKA = resource_filename(__name__,
-                                         './data/psf_ref_frame90.pka')
+_DATA = files(__package__).joinpath("data")
+
+PSF_FRAME_ZERO_PKA = str(_DATA.joinpath("psf_ref_frame0.pka"))
+PSF_FRAME_NINETY_PKA = str(_DATA.joinpath("psf_ref_frame90.pka"))
 # Issue #10
-INDEXERR_FRAME14_GRO = resource_filename(__name__,
-                                         './data/indexerr_frame14.gro')
-INDEXERR_FRAME14_XTC = resource_filename(__name__,
-                                         './data/indexerr_frame14.xtc')
-ATTERR_FRAME1_PDB = resource_filename(__name__,
-                                      './data/atterr_frame1.pdb')
-ATTERR_FRAME1_XTC = resource_filename(__name__,
-                                      './data/atterr_frame1.xtc')
+INDEXERR_FRAME14_GRO = str(_DATA.joinpath("indexerr_frame14.gro"))
+INDEXERR_FRAME14_XTC = str(_DATA.joinpath("indexerr_frame14.xtc"))
+ATTERR_FRAME1_PDB = str(_DATA.joinpath("atterr_frame1.pdb"))
+ATTERR_FRAME1_XTC = str(_DATA.joinpath("atterr_frame1.xtc"))
+
+del _DATA
