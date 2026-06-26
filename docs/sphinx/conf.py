@@ -46,6 +46,9 @@ html_baseurl = 'https://becksteinlab.github.io/propkatraj/'
 
 html_theme = 'mdanalysis_sphinx_theme'
 
+html_logo = '_static/propkatraj-logo.svg'
+html_favicon = '_static/propkatraj-favicon.svg'
+
 extra_nav_links = {
     'MDAnalysis': 'https://mdanalysis.org',
     'PROPKA': 'https://propka.readthedocs.io',

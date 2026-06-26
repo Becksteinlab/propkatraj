@@ -6,6 +6,11 @@
 propkatraj: ensemble pKa estimates
 ==================================
 
+.. image:: _static/propkatraj-logo.svg
+   :alt: propkatraj logo
+   :width: 180px
+   :align: center
+
 :Release: |release|
 :Date: |today|
 :Citation: |zenodo|
