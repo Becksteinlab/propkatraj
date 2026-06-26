@@ -16,7 +16,7 @@ import propkatraj
 project = 'propkatraj'
 copyright = '2016-2023, David Dotson, Oliver Beckstein, Armin Zjajo, Rick Sexton, Shujie Fan, Irfan Alibay, Ian Kenney'
 author = 'David Dotson'
-release = '2.0.0'
+release = '2.0.2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -30,18 +30,39 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
     'sphinx_sitemap',
-    'sphinx_rtd_theme',
+    'mdanalysis_sphinx_theme',
 ]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+# https://github.com/jdillard/sphinx-sitemap
+html_baseurl = 'https://becksteinlab.github.io/propkatraj/'
 
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'mdanalysis_sphinx_theme'
+
+html_logo = '_static/propkatraj-logo.svg'
+html_favicon = '_static/propkatraj-favicon.svg'
+
+extra_nav_links = {
+    'MDAnalysis': 'https://mdanalysis.org',
+    'PROPKA': 'https://propka.readthedocs.io',
+}
+
+html_theme_options = {
+    'mda_official': False,
+    'extra_nav_links': extra_nav_links,
+}
+
+html_sidebars = {
+    '**': ['globaltoc.html', 'localtoc.html', 'searchbox.html'],
+}
+
 html_static_path = ['_static']
 
 # Configuration for intersphinx: refer to the Python standard library
