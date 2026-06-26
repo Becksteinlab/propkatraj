@@ -113,8 +113,8 @@ pkatraj.results.pkas.describe()
 
 ## Documentation
 
-See the Jupyter notebook
-[docs/propkatraj-example.ipynb](https://nbviewer.jupyter.org/github/Becksteinlab/propkatraj/blob/main/docs/propkatraj-example.ipynb)
+See the
+[example usage page](https://becksteinlab.github.io/propkatraj/usage/examples.html)
 for how to use `propkatraj.PropkaTraj` on an example trajectory and
 how to plot the data with [seaborn](https://seaborn.pydata.org/).
 
